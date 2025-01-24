@@ -1,0 +1,4 @@
+name: Dungeons
+version: '1.0-SNAPSHOT'
+main: gruvexp.dungeons.Main
+api-version: '1.21'
