@@ -215,7 +215,10 @@ public class DungeonStructure {
         //Bukkit.broadcastMessage(String.format("Origin moved to: %s, %s, %s (%s)", location.getX(), location.getY(), location.getZ(), dir));
         structure.place(loc, false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM);
         //Fun
-        structureVisualization.place(new Location(loc.getWorld(), loc.getX(), loc.getY() + 10, loc.getZ()), false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM); // previous: funvalue i y aksen
+        if (structureVisualization != null) {
+            structureVisualization.place(new Location(loc.getWorld(), loc.getX(), loc.getY() + 10, loc.getZ()), false,
+                    structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM); // previous: funvalue i y aksen
+        }
         for (Entity e : structure.getEntities()) {
             String name = ChatColor.stripColor(e.getName());
             switch (name) {
