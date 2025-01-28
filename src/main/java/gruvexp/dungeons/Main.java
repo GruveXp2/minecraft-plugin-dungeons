@@ -20,7 +20,7 @@ public final class Main extends JavaPlugin {
         getCommand("dungeon").setExecutor(new DungeonCommand());
         getCommand("dungeon").setTabCompleter(new DungeonTabCompletor());
         plugin = this;
-        WORLD = Bukkit.getWorld("Dungeon Test");
+        WORLD = Bukkit.getWorld("dungeon test");
         DungeonManager.init();
     }
 
