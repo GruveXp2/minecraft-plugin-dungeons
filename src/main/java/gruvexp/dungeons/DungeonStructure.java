@@ -109,7 +109,7 @@ public class DungeonStructure {
         return loc;
     }
 
-    public static Location moveForward(Location loc, Direction dir, int blocks) {
+    public static void moveForward(Location loc, Direction dir, int blocks) {
         switch (dir) {
             case S, NS -> loc.add(0, 0, blocks);
             case W -> loc.add(-blocks, 0, 0);
@@ -117,7 +117,6 @@ public class DungeonStructure {
             case E, EW -> loc.add(blocks, 0, 0);
             default -> throw new IllegalArgumentException("Illegal direction: " + dir + " (Dungeonstructure:118)");
         }
-        return loc;
     }
 
     private static Direction toAbsoluteDirection(Direction relDir) {
