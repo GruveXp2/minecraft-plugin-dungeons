@@ -8,10 +8,10 @@ public class SpawnFeature {
     private final Location loc;
     private final DungeonFeature structure; // abcdefghijklmnopqrstuvwyzæøå
 
-    public SpawnFeature(Direction dir, Location loc, DungeonFeature feature) {
+    public SpawnFeature(Direction dir, Location loc, Feature feature) {
         this.dir = dir;
         this.loc = loc;
-        this.structure = feature;
+        this.structure = feature.feature();
     }
 
     public void spawn(float integrity) {

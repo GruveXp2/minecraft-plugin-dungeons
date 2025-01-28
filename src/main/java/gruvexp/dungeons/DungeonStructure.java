@@ -16,19 +16,19 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class DungeonStructure {
-    private final Structure STRUCTURE;
-    private final Structure STRUCTURE_FUN; //Fun
-    private final Coord ENTRY;
+    private final Structure structure;
+    private final Structure structureVisualization; //Fun
+    private final Coord entry;
     public final HashMap<Location, Direction> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
 
     public DungeonStructure(String structureName, Coord entry) {
-        STRUCTURE = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), structureName));
-        STRUCTURE_FUN = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), "_" + structureName)); //Fun
-        if (STRUCTURE == null) {
+        structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), structureName));
+        structureVisualization = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), "_" + structureName)); //Fun
+        if (structure == null) {
             throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + structureName + "\" fins ikke!");
         }
-        ENTRY = entry;
-        for (Entity e : STRUCTURE.getEntities()) {
+        this.entry = entry;
+        for (Entity e : structure.getEntities()) {
             String name = ChatColor.stripColor(e.getName());
             switch (name) {
                 case "Forward", "Right", "Left", "Backward" -> {
@@ -141,12 +141,12 @@ public class DungeonStructure {
     }
 
     private void moveToOrigin(Location loc, Direction dir) {
-
+        // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkuratt passer med utanga til den forrige strukturen
         switch (dir) {
-            case N -> loc.add(ENTRY.x, -ENTRY.y, ENTRY.z);
-            case S -> loc.add(-ENTRY.x, -ENTRY.y, -ENTRY.z);
-            case E -> loc.add(-ENTRY.z, -ENTRY.y, ENTRY.x);
-            case W -> loc.add(ENTRY.z, -ENTRY.y, -ENTRY.x);
+            case N -> loc.add(entry.x, -entry.y, entry.z);
+            case S -> loc.add(-entry.x, -entry.y, -entry.z);
+            case E -> loc.add(-entry.z, -entry.y, entry.x);
+            case W -> loc.add(entry.z, -entry.y, -entry.x);
             default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:148)");
         }
     }
@@ -175,7 +175,7 @@ public class DungeonStructure {
     }
 
     public boolean availableSpace(Location loc, Direction dir) { // sjekker om det er plass til å spawne denne structuren eller om det er spaces som er opptatt av et annet rom i dungenen. input lokasjon og retning: exitpkt i forrige rom.
-        for (Entity e : STRUCTURE.getEntities()) {
+        for (Entity e : structure.getEntities()) {
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
             Location loc_ = loc.clone();
             moveForward(loc_, dir, 1);
@@ -196,28 +196,28 @@ public class DungeonStructure {
         StructureRotation structureRotation;
         switch (dir) {
             case N -> {
-                loc.add(ENTRY.x, -ENTRY.y, ENTRY.z - 1);
+                loc.add(entry.x, -entry.y, entry.z - 1);
                 structureRotation = StructureRotation.CLOCKWISE_180;
             }
             case S -> {
-                loc.add(-ENTRY.x, -ENTRY.y, -ENTRY.z + 1);
+                loc.add(-entry.x, -entry.y, -entry.z + 1);
                 structureRotation = StructureRotation.NONE;
             }
             case E -> {
-                loc.add(-ENTRY.z + 1, -ENTRY.y, ENTRY.x);
+                loc.add(-entry.z + 1, -entry.y, entry.x);
                 structureRotation = StructureRotation.COUNTERCLOCKWISE_90;
             }
             case W -> {
-                loc.add(ENTRY.z - 1, -ENTRY.y, -ENTRY.x);
+                loc.add(entry.z - 1, -entry.y, -entry.x);
                 structureRotation = StructureRotation.CLOCKWISE_90;
             }
             default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:212)");
         }
         //Bukkit.broadcastMessage(String.format("Origin moved to: %s, %s, %s (%s)", location.getX(), location.getY(), location.getZ(), dir));
-        STRUCTURE.place(loc, false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM);
+        structure.place(loc, false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM);
         //Fun
-        STRUCTURE_FUN.place(new Location(loc.getWorld(), loc.getX(), loc.getY() + 10, loc.getZ()), false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM); // previous: funvalue i y aksen
-        for (Entity e : STRUCTURE.getEntities()) {
+        structureVisualization.place(new Location(loc.getWorld(), loc.getX(), loc.getY() + 10, loc.getZ()), false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM); // previous: funvalue i y aksen
+        for (Entity e : structure.getEntities()) {
             String name = ChatColor.stripColor(e.getName());
             switch (name) {
                 case "Forward", "Right", "Left", "Backward" -> {
@@ -246,7 +246,7 @@ public class DungeonStructure {
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
-                    DungeonManager.walls.put(eLoc, new SpawnFeature(wallDir, eLoc, DungeonManager.features.get("wall")));
+                    DungeonManager.walls.put(eLoc, new SpawnFeature(wallDir, eLoc, Feature.WALL));
                 }
                 case "Iron Arch FB", "Iron Arch RL" -> {
                     String archDirStr = name.substring(name.length() - 2);
@@ -255,7 +255,7 @@ public class DungeonStructure {
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
-                    DungeonManager.ironArches.add(new SpawnFeature(archDir, eLoc, DungeonManager.features.get("iron_arch")));
+                    DungeonManager.ironArches.add(new SpawnFeature(archDir, eLoc, Feature.IRON_ARCH));
                 }
                 case "Skeleton" -> {
                     Location eLoc = e.getLocation();
