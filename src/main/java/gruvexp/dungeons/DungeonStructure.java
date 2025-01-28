@@ -21,11 +21,11 @@ public class DungeonStructure {
     private final Coord entry;
     public final HashMap<Location, Direction> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
 
-    public DungeonStructure(String structureName, Coord entry) {
-        structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), structureName));
-        structureVisualization = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), "_" + structureName)); //Fun
+    public DungeonStructure(String structureGroup, String structureName, Coord entry) {
+        structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, structureName));
+        structureVisualization = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, "_" + structureName)); //Fun
         if (structure == null) {
-            throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + structureName + "\" fins ikke!");
+            throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + new NamespacedKey(structureGroup, structureName).namespace() + "\" fins ikke!");
         }
         this.entry = entry;
         for (Entity e : structure.getEntities()) {
