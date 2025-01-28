@@ -191,7 +191,7 @@ public class DungeonStructure {
         return true;
     }
 
-    public void place(Location loc, Direction dir) {
+    public void place(Dungeon dungeon, Location loc, Direction dir) {
         //Bukkit.broadcastMessage(String.format("Initial origin: %s, %s, %s", location.getX(), location.getY(), location.getZ()));
         StructureRotation structureRotation;
         switch (dir) {
@@ -227,7 +227,7 @@ public class DungeonStructure {
                     //Bukkit.broadcastMessage(String.format(ChatColor.AQUA + "Rotated: %s, %s, %s (%s) and adding node", eLoc.getX(), eLoc.getY(), eLoc.getZ(), dir));
                     eLoc.add(loc);
                     //spawnTextMarker(eLoc, e.getName());
-                    DungeonManager.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(name), structureRotation)));
+                    dungeon.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(name), structureRotation),));
                 }
                 case "Space" -> {
                     Location eLoc = e.getLocation();

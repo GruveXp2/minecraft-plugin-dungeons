@@ -2,6 +2,7 @@ package gruvexp.dungeons.commands;
 
 import gruvexp.dungeons.Direction;
 import gruvexp.dungeons.DungeonManager;
+import gruvexp.dungeons.RoomType;
 import gruvexp.dungeons.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,29 +22,29 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
             }
             String oper = args[0];
             switch (oper) {
-                case "spawn" -> {
+                case "spawn" -> { // spawn dungeon x y z dir (size) 12  1
                     if (args.length < 5) {
                         throw new IllegalArgumentException("not enough args");
                     }
-                    Location location = Utils.toLocation(args[1], args[2], args[3]);
-                    String dir = args[4]; // retning
+                    Location location = Utils.toLocation(args[2], args[3], args[4]);
+                    String dir = args[5]; // retning
                     int size = 500; // default maks 500 romm
                     if (args.length == 6) {
-                        size = Utils.toInt(args[5]);
+                        size = Utils.toInt(args[6]);
                     }
                     // make the dungeon
-                    DungeonManager.makeDungeon(location, Direction.fromString(dir), size);
+                    DungeonManager.fortress.makeDungeon(location, Direction.fromString(dir), RoomType.FORTRESS_BRIDGE, size);
                 }
                 case "manualspawn" -> {
                     if (args.length == 1) {
                         throw new IllegalArgumentException("not enough args");
                     }
                     String bool = args[1];
-                    DungeonManager.manualSpawn = bool.equals("true");
-                    sender.sendMessage("Changed manualspawn to " + DungeonManager.manualSpawn);
+                    DungeonManager.fortress.manualSpawn = bool.equals("true");
+                    sender.sendMessage("Changed manualspawn to " + DungeonManager.fortress.manualSpawn);
                 }
-                case "nextroom" -> DungeonManager.manualNextNode();
-                case "printusedspaces" -> DungeonManager.usedSpaces.stream().sorted((loc1, loc2) -> { //WHAT!!!! DEN PRINTER UT LIKE USED SPACES FLER GANGER?! SÅ DA ER DE IKKE LIKE ALIKAVEL, FINN UT HVORFOR => => => (kanskje posisjonene som kommer fra shulkersane har forskjellig yaw & pitch?)
+                case "nextroom" -> DungeonManager.fortress.manualNextNode();
+                case "printusedspaces" -> DungeonManager.fortress.usedSpaces.stream().sorted((loc1, loc2) -> { //WHAT!!!! DEN PRINTER UT LIKE USED SPACES FLER GANGER?! SÅ DA ER DE IKKE LIKE ALIKAVEL, FINN UT HVORFOR => => => (kanskje posisjonene som kommer fra shulkersane har forskjellig yaw & pitch?)
                     int compareByX = Double.compare(loc1.getX(), loc2.getX());
                     if (compareByX != 0) {
                         return compareByX; // Sort by X if not equal
