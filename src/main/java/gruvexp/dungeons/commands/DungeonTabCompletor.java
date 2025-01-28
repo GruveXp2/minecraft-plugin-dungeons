@@ -24,14 +24,17 @@ public class DungeonTabCompletor implements TabCompleter {
         try {
             switch (oper) {
                 case "spawn" -> {
-                    if (args.length <= 4) {
+                    if (args.length == 2) {
+                        return List.of("fortress");
+                    }
+                    if (args.length <= 5) {
                         Coord loc = Utils.getTargetBlock(p, 10);
                         return List.of(loc.toString());
                     }
-                    if (args.length == 5) {
+                    if (args.length == 6) {
                         return List.of("N", "E", "S", "W");
                     }
-                    if (args.length == 6) {
+                    if (args.length == 7) {
                         return List.of("<max rooms>");
                     }
                     return new ArrayList<>(0);
