@@ -9,13 +9,19 @@ public class StructurePool {
     private final Map<GrowRate, Map<Room, Integer>> structures = new HashMap<>();
     private int totalWeight = 0;
 
+    public StructurePool() {
+        structures.put(GrowRate.SHRINKING, new HashMap<>());
+        structures.put(GrowRate.STATIC, new HashMap<>());
+        structures.put(GrowRate.EXPANDING, new HashMap<>());
+    }
+
     public void addStructure(Room room, int weight) {
         structures.get(room.growRate).put(room, weight);
         totalWeight += weight;
     }
 
     public void updateWeight(Room room, int newWeight) {
-        if (structures.containsKey(room)) {
+        if (structures.get(room.growRate).containsKey(room)) {
             totalWeight -= structures.get(room.growRate).get(room);
             structures.get(room.growRate).put(room, newWeight);
             totalWeight += newWeight;
