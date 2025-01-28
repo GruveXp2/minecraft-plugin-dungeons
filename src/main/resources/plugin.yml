@@ -1,4 +1,11 @@
 name: Dungeons
-version: '1.0-SNAPSHOT'
+version: '${version}'
 main: gruvexp.dungeons.Main
 api-version: '1.21'
+commands:
+  test:
+    description: Where you test stuff
+    usage: It varies over time
+  dungeon:
+    description: Spawns dungeon
+    usage: Ask gwuve
