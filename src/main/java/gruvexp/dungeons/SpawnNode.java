@@ -19,31 +19,31 @@ public class SpawnNode {
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
         GrowRate growRate = dungeon.getRandomExpansionRate();
-        StructurePool pool = dungeon.structurePools.get(roomType);
-        spawn(growRate, pool);
+        spawn(growRate, dungeon);
     }
 
-    private void spawn(GrowRate growRate, StructurePool pool) {
+    private void spawn(GrowRate growRate, Dungeon dungeon) {
 
+        StructurePool pool = dungeon.structurePools.get(roomType);
         DungeonStructure dungeonStructure = pool.getRandomStructure(growRate).structure();
         if (dungeonStructure.availableSpace(location, direction)) {
             if (growRate != GrowRate.SHRINKING && tries < 5 && dungeonStructure.hasConflictingExits(location, direction)) {
                 //Bukkit.broadcastMessage("Room " + randomNumber + " has conflixting exits, trying different room");
                 tries++;
                 if (tries < 6) {
-                    spawn(growRate, pool);
+                    spawn(growRate, dungeon);
                 } else {
                     tries = 0;
                     if (growRate == GrowRate.EXPANDING) {
-                        spawn(GrowRate.STATIC, pool);
+                        spawn(GrowRate.STATIC, dungeon);
                     } else if (growRate == GrowRate.STATIC) {
-                        spawn(GrowRate.SHRINKING, pool);
+                        spawn(GrowRate.SHRINKING, dungeon);
                     }
                 }
                 return;
             }
             //Bukkit.broadcastMessage(String.format("Spawning room %s:%s", spread, randomNumber));
-            dungeonStructure.place(location, direction);
+            dungeonStructure.place(dungeon, location, direction);
         } else {
             if (!Room.END.structure().availableSpace(location, direction)) {
                 //Bukkit.broadcastMessage("No space for a room to generate, spawning wall");
@@ -60,7 +60,7 @@ public class SpawnNode {
             }
             //Bukkit.broadcastMessage("Not enough space, trying another room");
             tries++;
-            spawn(growRate, pool);
+            spawn(growRate, dungeon);
         }
     }
 }
