@@ -226,7 +226,7 @@ public class DungeonStructure {
                     //Bukkit.broadcastMessage(String.format(ChatColor.AQUA + "Rotated: %s, %s, %s (%s) and adding node", eLoc.getX(), eLoc.getY(), eLoc.getZ(), dir));
                     eLoc.add(loc);
                     //spawnTextMarker(eLoc, e.getName());
-                    dungeon.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(name), structureRotation),));
+                    dungeon.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(name), structureRotation), RoomType.FORTRESS_BRIDGE));
                 }
                 case "Space" -> {
                     Location eLoc = e.getLocation();
