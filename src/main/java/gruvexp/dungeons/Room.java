@@ -13,14 +13,14 @@ public enum Room {
     T_SPLIT_L(new DungeonStructure("dungeon", "t_split_l", new Coord(2, 1, 0)), GrowRate.EXPANDING, RoomType.CATACOMB_WALKWAY),
 
     // fortress
-    FORTRESS_BRIDGE_STRAIGHT(new DungeonStructure("fortress", "bridge_straight", new Coord(2, 1, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
-    FORTRESS_BRIDGE_STRAIGHT_POLE(new DungeonStructure("fortress", "bridge_straight_pole", new Coord(2, 1, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
-    FORTRESS_BRIDGE_END(new DungeonStructure("fortress", "bridge_end", new Coord(2, 1, 0)), GrowRate.SHRINKING, RoomType.FORTRESS_BRIDGE),
-    FORTRESS_BRIDGE_INTER_OPEN(new DungeonStructure("fortress", "bridge_t", new Coord(10, 1, 0)), GrowRate.EXPANDING, RoomType.FORTRESS_BRIDGE),
-    FORTRESS_BRIDGE_INTER_CLOSED(new DungeonStructure("fortress", "bridge_x", new Coord(2, 1, 0)), GrowRate.EXPANDING, RoomType.FORTRESS_BRIDGE),
-    FORTRESS_BRIDGE_BLAZE(new DungeonStructure("fortress", "bridge_blaze", new Coord(2, 6, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
-    FORTRESS_BRIDGE_L(new DungeonStructure("fortress", "bridge_l", new Coord(2, 1, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
-    FORTRESS_BRIDGE_R(new DungeonStructure("fortress", "bridge_r", new Coord(2, 1, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE);
+    FORTRESS_BRIDGE_STRAIGHT(new DungeonStructure("fortress", "bridge_straight", new Coord(2, 6, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
+    FORTRESS_BRIDGE_STRAIGHT_POLE(new DungeonStructure("fortress", "bridge_straight_pole", new Coord(2, 5, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
+    FORTRESS_BRIDGE_END(new DungeonStructure("fortress", "bridge_end", new Coord(2, 5, 0)), GrowRate.SHRINKING, RoomType.FORTRESS_BRIDGE),
+    FORTRESS_BRIDGE_INTER_OPEN(new DungeonStructure("fortress", "bridge_t", new Coord(10, 6, 0)), GrowRate.EXPANDING, RoomType.FORTRESS_BRIDGE),
+    FORTRESS_BRIDGE_INTER_CLOSED(new DungeonStructure("fortress", "bridge_x", new Coord(3, 1, 0)), GrowRate.EXPANDING, RoomType.FORTRESS_BRIDGE),
+    FORTRESS_BRIDGE_BLAZE(new DungeonStructure("fortress", "bridge_blaze", new Coord(3, 3, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
+    FORTRESS_BRIDGE_L(new DungeonStructure("fortress", "bridge_l", new Coord(3, 1, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE),
+    FORTRESS_BRIDGE_R(new DungeonStructure("fortress", "bridge_r", new Coord(3, 1, 0)), GrowRate.STATIC, RoomType.FORTRESS_BRIDGE);
 
     private final DungeonStructure structure;
     public final GrowRate growRate;
