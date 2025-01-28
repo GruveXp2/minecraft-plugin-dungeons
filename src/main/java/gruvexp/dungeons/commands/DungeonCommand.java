@@ -24,17 +24,22 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
             String oper = args[0];
             switch (oper) {
                 case "spawn" -> { // spawn dungeon x y z dir (size) 12  1
-                    if (args.length < 5) {
+                    if (args.length < 6) {
                         throw new IllegalArgumentException("not enough args");
                     }
+                    String dungeonType = args[1];
                     Location location = Utils.toLocation(args[2], args[3], args[4]);
                     String dir = args[5]; // retning
                     int size = 500; // default maks 500 romm
-                    if (args.length == 6) {
+                    if (args.length == 7) {
                         size = Utils.toInt(args[6]);
                     }
                     // make the dungeon
-                    DungeonManager.fortress.makeDungeon(location, Direction.fromString(dir), RoomType.FORTRESS_BRIDGE, size);
+                    if (dungeonType.equals("fortress")) {
+                        DungeonManager.fortress.makeDungeon(location, Direction.fromString(dir), RoomType.FORTRESS_BRIDGE, size);
+                    } else {
+                        sender.sendMessage(dungeonType + " isnt added at the moment");
+                    }
                 }
                 case "manualspawn" -> {
                     if (args.length == 1) {
