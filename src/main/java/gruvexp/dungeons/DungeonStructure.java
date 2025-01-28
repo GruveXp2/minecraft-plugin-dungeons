@@ -17,15 +17,15 @@ import java.util.Objects;
 
 public class DungeonStructure {
     private final Structure structure;
-    private final Structure STRUCTURE_FUN; //Fun
+    private final Structure structureVisualization; //Fun
     private final Coord entry;
     public final HashMap<Location, Direction> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
 
     public DungeonStructure(String structureName, Coord entry) {
         structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), structureName));
-        STRUCTURE_FUN = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), "_" + structureName)); //Fun
+        structureVisualization = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(Main.getPlugin(), "_" + structureName)); //Fun
         if (structure == null) {
-            throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + new NamespacedKey(Main.getPlugin(), structureName) + "\" fins ikke!");
+            throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + structureName + "\" fins ikke!");
         }
         this.entry = entry;
         for (Entity e : structure.getEntities()) {
@@ -141,7 +141,7 @@ public class DungeonStructure {
     }
 
     private void moveToOrigin(Location loc, Direction dir) {
-
+        // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkuratt passer med utanga til den forrige strukturen
         switch (dir) {
             case N -> loc.add(entry.x, -entry.y, entry.z);
             case S -> loc.add(-entry.x, -entry.y, -entry.z);
@@ -216,7 +216,7 @@ public class DungeonStructure {
         //Bukkit.broadcastMessage(String.format("Origin moved to: %s, %s, %s (%s)", location.getX(), location.getY(), location.getZ(), dir));
         structure.place(loc, false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM);
         //Fun
-        STRUCTURE_FUN.place(new Location(loc.getWorld(), loc.getX(), loc.getY() + 10, loc.getZ()), false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM); // previous: funvalue i y aksen
+        structureVisualization.place(new Location(loc.getWorld(), loc.getX(), loc.getY() + 10, loc.getZ()), false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM); // previous: funvalue i y aksen
         for (Entity e : structure.getEntities()) {
             String name = ChatColor.stripColor(e.getName());
             switch (name) {
@@ -246,7 +246,7 @@ public class DungeonStructure {
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
-                    DungeonManager.walls.put(eLoc, new SpawnFeature(wallDir, eLoc, DungeonManager.features.get("wall")));
+                    DungeonManager.walls.put(eLoc, new SpawnFeature(wallDir, eLoc, Feature.WALL));
                 }
                 case "Iron Arch FB", "Iron Arch RL" -> {
                     String archDirStr = name.substring(name.length() - 2);
@@ -255,7 +255,7 @@ public class DungeonStructure {
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
-                    DungeonManager.ironArches.add(new SpawnFeature(archDir, eLoc, DungeonManager.features.get("iron_arch")));
+                    DungeonManager.ironArches.add(new SpawnFeature(archDir, eLoc, Feature.IRON_ARCH));
                 }
                 case "Skeleton" -> {
                     Location eLoc = e.getLocation();
