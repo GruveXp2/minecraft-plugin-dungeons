@@ -9,12 +9,13 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Collectors;
 
 public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 4 3489 N 3
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // /dungeon spawn xyz dir
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) { // /dungeon spawn xyz dir
 
         try {
             if (args.length == 0) {
