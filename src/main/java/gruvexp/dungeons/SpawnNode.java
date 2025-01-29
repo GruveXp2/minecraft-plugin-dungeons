@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
-import java.util.ArrayList;
-
 public class SpawnNode {
     private final Location location;
     private Direction direction;
@@ -26,8 +24,8 @@ public class SpawnNode {
 
         StructurePool pool = dungeon.structurePools.get(roomType);
         DungeonStructure dungeonStructure = pool.getRandomStructure(growRate).structure();
-        if (dungeonStructure.availableSpace(location, direction)) {
-            if (growRate != GrowRate.SHRINKING && tries < 5 && dungeonStructure.hasConflictingExits(location, direction)) {
+        if (dungeonStructure.availableSpace(dungeon, location, direction)) {
+            if (growRate != GrowRate.SHRINKING && tries < 5 && dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
                 //Bukkit.broadcastMessage("Room " + randomNumber + " has conflixting exits, trying different room");
                 tries++;
                 if (tries < 6) {
@@ -45,7 +43,7 @@ public class SpawnNode {
             //Bukkit.broadcastMessage(String.format("Spawning room %s:%s", spread, randomNumber));
             dungeonStructure.place(dungeon, location, direction);
         } else {
-            if (!Room.END.structure().availableSpace(location, direction)) {
+            if (!Room.END.structure().availableSpace(dungeon, location, direction)) {
                 //Bukkit.broadcastMessage("No space for a room to generate, spawning wall");
                 switch (direction) {
                     case N, S -> direction = Direction.NS;

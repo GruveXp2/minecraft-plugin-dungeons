@@ -20,5 +20,5 @@ public class NetherFortress extends Dungeon {
         bridges.addStructure(Room.FORTRESS_BRIDGE_INTER, 1);
         bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE, 1);
         structurePools.put(RoomType.FORTRESS_BRIDGE, bridges);
-    }
+    } // 2DO! GJØR AT USED SPACES VISES SOM TEXTDISPLAYS!! MED SHOWUSEDSPACES
 }
