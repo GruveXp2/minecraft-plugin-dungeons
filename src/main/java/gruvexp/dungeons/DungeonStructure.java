@@ -20,8 +20,10 @@ public class DungeonStructure {
     private final Structure structureVisualization; //Fun
     private final Coord entry;
     public final HashMap<Location, Direction> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
+    public final RoomType roomType;
 
-    public DungeonStructure(String structureGroup, String structureName, Coord entry) {
+    public DungeonStructure(String structureGroup, String structureName, Coord entry, RoomType roomType) {
+        this.roomType = roomType;
         structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, structureName));
         structureVisualization = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, "_" + structureName)); //Fun
         if (structure == null) {
@@ -29,14 +31,15 @@ public class DungeonStructure {
         }
         this.entry = entry;
         for (Entity e : structure.getEntities()) {
-            String name = ChatColor.stripColor(e.getName());
-            switch (name) {
+            String[] name = ChatColor.stripColor(e.getName()).split(" ");
+            String directionStr = name[0];
+            switch (directionStr) {
                 case "Forward", "Right", "Left", "Backward" -> {
                     Location eLoc = e.getLocation();
                     eLoc.setX(eLoc.getBlockX());
                     eLoc.setZ(eLoc.getBlockZ());
-                    Direction dir = Direction.fromString(name);
-                    moveForward(eLoc, toAbsoluteDirection(dir), 3);
+                    Direction dir = Direction.fromString(directionStr);
+                    moveForward(eLoc, toAbsoluteDirection(dir), (roomType.gridSize + 1) / 2);
                     exitLocations.put(eLoc, dir);
                 }
             }
@@ -140,7 +143,7 @@ public class DungeonStructure {
     }
 
     private void moveToOrigin(Location loc, Direction dir) {
-        // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkuratt passer med utanga til den forrige strukturen
+        // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkurat passer med utanga til den forrige strukturen
         switch (dir) {
             case N -> loc.add(entry.x, -entry.y, entry.z);
             case S -> loc.add(-entry.x, -entry.y, -entry.z);
@@ -150,7 +153,8 @@ public class DungeonStructure {
         }
     }
 
-    public boolean hasConflictingExits(Location loc, Direction dir) { // input lokasjon: i endepunktet på det forrige rommet. input retning: retninga til exiten i det forrige rommet.
+    public boolean hasConflictingExits(Dungeon dungeon, Location loc, Direction dir) {
+        // input lokasjon: i endepunktet på det forrige rommet. input retning: retninga til exiten i det forrige rommet.
         for (Location exitLoc : exitLocations.keySet()) { // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Raw: " + Utils.printLocation(exitLoc));
             Location rotatedExitSpace = rotateLocation(exitLoc.clone(), dir);
@@ -164,7 +168,7 @@ public class DungeonStructure {
             rotatedExitSpace.setYaw(0);
             rotatedExitSpace.setPitch(0);
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Moved: " + Utils.printLocation(rotatedExitSpace));
-            if (DungeonManager.usedSpaces.contains(rotatedExitSpace)) {
+            if (dungeon.usedSpaces.contains(rotatedExitSpace)) {
                 return true;
             }
             //Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + Utils.printLocation(rotatedExitSpace) + " is free, spawing in structure");
@@ -173,7 +177,9 @@ public class DungeonStructure {
         return false;
     }
 
-    public boolean availableSpace(Location loc, Direction dir) { // sjekker om det er plass til å spawne denne structuren eller om det er spaces som er opptatt av et annet rom i dungenen. input lokasjon og retning: exitpkt i forrige rom.
+    public boolean availableSpace(Dungeon dungeon, Location loc, Direction dir) {
+        // sjekker om det er plass til å spawne denne structuren eller om det er spaces som er opptatt av et annet rom i dungenen.
+        // input lokasjon og retning: exitpkt i forrige rom.
         for (Entity e : structure.getEntities()) {
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
             Location loc_ = loc.clone();
@@ -183,7 +189,7 @@ public class DungeonStructure {
             loc_.setYaw(0);
             loc_.setPitch(0);
 
-            if (DungeonManager.usedSpaces.contains(loc_)) {
+            if (dungeon.usedSpaces.contains(loc_)) {
                 return false;
             }
         }
@@ -220,8 +226,9 @@ public class DungeonStructure {
                     structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM); // previous: funvalue i y aksen
         }
         for (Entity e : structure.getEntities()) {
-            String name = ChatColor.stripColor(e.getName());
-            switch (name) {
+            String[] name = ChatColor.stripColor(e.getName()).split(" ");
+            String type = name[0];
+            switch (type) {
                 case "Forward", "Right", "Left", "Backward" -> {
                     Location eLoc = e.getLocation();
                     //Bukkit.broadcastMessage(String.format(ChatColor.AQUA + "Entity rel loc: %s, %s, %s", eLoc.getBlockX(), eLoc.getBlockY(), eLoc.getBlockZ()));
@@ -229,7 +236,7 @@ public class DungeonStructure {
                     //Bukkit.broadcastMessage(String.format(ChatColor.AQUA + "Rotated: %s, %s, %s (%s) and adding node", eLoc.getX(), eLoc.getY(), eLoc.getZ(), dir));
                     eLoc.add(loc);
                     //spawnTextMarker(eLoc, e.getName());
-                    dungeon.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(name), structureRotation), RoomType.FORTRESS_BRIDGE));
+                    dungeon.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(type), structureRotation), RoomType.valueOf(name[1])));
                 }
                 case "Space" -> {
                     Location eLoc = e.getLocation();
@@ -237,12 +244,12 @@ public class DungeonStructure {
                     eLoc.add(loc);
                     eLoc.setYaw(0);
                     eLoc.setPitch(0);
-                    DungeonManager.usedSpaces.add(eLoc);
+                    dungeon.usedSpaces.add(eLoc);
                     //spawnTextMarker(eLoc, e.getName());
                     //Bukkit.broadcastMessage(ChatColor.AQUA + "Space used up at " + Utils.printLocation(eLoc));
                 }
                 case "Wall FB", "Wall RL" -> {
-                    String wallDirStr = name.substring(name.length() - 2);
+                    String wallDirStr = type.substring(type.length() - 2);
                     Direction wallDir = Direction.fromString(wallDirStr);
                     wallDir = rotateNode(wallDir, structureRotation); // inkluderer absolutt rotasjon
                     Location eLoc = e.getLocation();
@@ -251,7 +258,7 @@ public class DungeonStructure {
                     DungeonManager.walls.put(eLoc, new SpawnFeature(wallDir, eLoc, Feature.WALL));
                 }
                 case "Iron Arch FB", "Iron Arch RL" -> {
-                    String archDirStr = name.substring(name.length() - 2);
+                    String archDirStr = type.substring(type.length() - 2);
                     Direction archDir = Direction.fromString(archDirStr);
                     archDir = rotateNode(archDir, structureRotation);
                     Location eLoc = e.getLocation();
@@ -277,7 +284,7 @@ public class DungeonStructure {
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
-                    Bukkit.broadcastMessage(ChatColor.GRAY + name);
+                    Bukkit.broadcastMessage(ChatColor.GRAY + type);
                     spawnTextMarker(eLoc, ChatColor.RED + e.getName());}
             }
         }
