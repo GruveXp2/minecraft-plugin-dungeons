@@ -1,9 +1,6 @@
 package gruvexp.dungeons.commands;
 
-import gruvexp.dungeons.Direction;
-import gruvexp.dungeons.DungeonManager;
-import gruvexp.dungeons.RoomType;
-import gruvexp.dungeons.Utils;
+import gruvexp.dungeons.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -50,15 +47,21 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                     sender.sendMessage("Changed manualspawn to " + DungeonManager.fortress.manualSpawn);
                 }
                 case "nextroom" -> DungeonManager.fortress.manualNextNode();
-                case "printusedspaces" -> DungeonManager.fortress.usedSpaces.stream().sorted((loc1, loc2) -> { //WHAT!!!! DEN PRINTER UT LIKE USED SPACES FLER GANGER?! SÅ DA ER DE IKKE LIKE ALIKAVEL, FINN UT HVORFOR => => => (kanskje posisjonene som kommer fra shulkersane har forskjellig yaw & pitch?)
-                    int compareByX = Double.compare(loc1.getX(), loc2.getX());
-                    if (compareByX != 0) {
-                        return compareByX; // Sort by X if not equal
-                    } else {
-                        // If X coordinates are the same, sort by Z
-                        return Double.compare(loc1.getZ(), loc2.getZ());
-                    }
-                }).collect(Collectors.toList()).forEach(location -> sender.sendMessage(ChatColor.RED + Utils.printLocation(location)));
+                case "printusedspaces" -> {
+                    DungeonManager.fortress.usedSpaces.stream().sorted((loc1, loc2) -> { //WHAT!!!! DEN PRINTER UT LIKE USED SPACES FLER GANGER?! SÅ DA ER DE IKKE LIKE ALIKAVEL, FINN UT HVORFOR => => => (kanskje posisjonene som kommer fra shulkersane har forskjellig yaw & pitch?)
+                        int compareByX = Double.compare(loc1.getX(), loc2.getX());
+                        if (compareByX != 0) {
+                            return compareByX; // Sort by X if not equal
+                        } else {
+                            // If X coordinates are the same, sort by Z
+                            return Double.compare(loc1.getZ(), loc2.getZ());
+                        }
+                    }).collect(Collectors.toList()).forEach(loc -> {
+                        sender.sendMessage(ChatColor.RED + Utils.printLocation(loc));
+                        DungeonStructure.spawnTextMarker(loc, ChatColor.YELLOW + Utils.printLocation(loc), "used_space");
+                    });
+                    sender.sendMessage("Tag: used_space");
+                }
                 default -> throw new IllegalArgumentException("wrong operation");
             }
         } catch (IllegalArgumentException e) {

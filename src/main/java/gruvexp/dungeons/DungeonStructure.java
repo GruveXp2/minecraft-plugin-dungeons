@@ -134,12 +134,12 @@ public class DungeonStructure {
         };
     }
 
-    private static void spawnTextMarker(Location loc, String name) {
+    public static void spawnTextMarker(Location loc, String name, String tag) {
         Location spawnLoc = new Location(loc.getWorld(), loc.getX() + 0.5, loc.getY(), loc.getZ() + 0.5);
         TextDisplay textDisplay = Main.WORLD.spawn(spawnLoc, TextDisplay.class);
         textDisplay.setText(name);
         textDisplay.setBillboard(TextDisplay.Billboard.VERTICAL);
-        textDisplay.addScoreboardTag("textmarker");
+        textDisplay.addScoreboardTag(tag);
     }
 
     private void moveToOrigin(Location loc, Direction dir) {
@@ -285,7 +285,7 @@ public class DungeonStructure {
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
                     Bukkit.broadcastMessage(ChatColor.GRAY + type);
-                    spawnTextMarker(eLoc, ChatColor.RED + e.getName());}
+                    spawnTextMarker(eLoc, ChatColor.RED + e.getName(), "unknown_entity");}
             }
         }
     }
