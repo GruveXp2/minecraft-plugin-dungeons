@@ -3,21 +3,35 @@ package gruvexp.dungeons;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.TextDisplay;
 
 public class SpawnNode {
     private final Location location;
     private Direction direction;
     private final RoomType roomType;
+    private final TextDisplay dirMarker;
+    private final TextDisplay typeMarker;
     int tries = 0;
     public SpawnNode(Location location, Direction direction, RoomType roomType) {
         this.location = location;
         this.direction = direction;
         this.roomType = roomType;
+        String name = switch (direction) {
+            case N -> ChatColor.BLUE + "North";
+            case S -> ChatColor.RED + "South";
+            case E -> ChatColor.GOLD + "East";
+            case W -> ChatColor.AQUA + "West";
+            default -> ChatColor.RED + "Error";
+        };
+        this.dirMarker = DungeonManager.spawnTextMarker(location, name, "dungeon_spawn_node");
+        this.typeMarker = DungeonManager.spawnTextMarker(location.clone().subtract(0, -0.25, 0), ChatColor.GRAY + roomType.name(), "dungeon_spawn_node");
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
         GrowRate growRate = dungeon.getRandomExpansionRate();
         spawn(growRate, dungeon);
+        dirMarker.remove();
+        typeMarker.remove();
     }
 
     private void spawn(GrowRate growRate, Dungeon dungeon) {

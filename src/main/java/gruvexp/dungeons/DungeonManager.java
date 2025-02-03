@@ -1,6 +1,7 @@
 package gruvexp.dungeons;
 
 import org.bukkit.Location;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.structure.StructureManager;
 
 import java.util.*;
@@ -24,5 +25,14 @@ public final class DungeonManager {
         }*/
         DungeonStructure dungeonStructure = room.structure();
         dungeonStructure.place(fortress, location, direction);
+    }
+
+    public static TextDisplay spawnTextMarker(Location loc, String name, String tag) {
+        Location spawnLoc = new Location(loc.getWorld(), loc.getX() + 0.5, loc.getY(), loc.getZ() + 0.5);
+        TextDisplay textDisplay = Main.WORLD.spawn(spawnLoc, TextDisplay.class);
+        textDisplay.setText(name);
+        textDisplay.setBillboard(TextDisplay.Billboard.VERTICAL);
+        textDisplay.addScoreboardTag(tag);
+        return textDisplay;
     }
 }
