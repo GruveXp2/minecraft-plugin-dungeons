@@ -144,6 +144,7 @@ public class DungeonStructure {
 
     private void moveToOrigin(Location loc, Direction dir) {
         // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkurat passer med utanga til den forrige strukturen
+        // så den flyttes til ett av hjørnene av strukturen som er det hjørnet med lavest xyz verdi i library verdenen
         switch (dir) {
             case N -> loc.add(entry.x, -entry.y, entry.z);
             case S -> loc.add(-entry.x, -entry.y, -entry.z);
@@ -154,22 +155,27 @@ public class DungeonStructure {
     }
 
     public boolean hasConflictingExits(Dungeon dungeon, Location loc, Direction dir) {
-        // input lokasjon: i endepunktet på det forrige rommet. input retning: retninga til exiten i det forrige rommet.
+        // sjekker om noen av endepunktene kommer til å kræsje inn i en vegg eller om de passer sammen
+        // input absolutt lokasjon: i endepunktet på det forrige rommet. input retning: retninga til exiten i det forrige rommet.
+        // gå her for mer info: /tp -471.31 101.00 -364.36
         for (Location exitLoc : exitLocations.keySet()) { // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Raw: " + Utils.printLocation(exitLoc));
             Location rotatedExitSpace = rotateLocation(exitLoc.clone(), dir);
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Rotated: " + Utils.printLocation(rotatedExitSpace));
-            rotatedExitSpace.add(loc);
-            moveForward(rotatedExitSpace, dir, 1); // flytter 1 blocc fram akkuratt som når man skal spawne inn så flytter man 1 fram fra exit pktet i det forrige rommet til entry pktet i dette rommet.
+            rotatedExitSpace.add(loc); // gjør om til absolutt lokasjon
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Inworld: " + Utils.printLocation(rotatedExitSpace));
             moveToOrigin(rotatedExitSpace, dir);
+            moveForward(rotatedExitSpace, dir, 1); // flytter 1 blocc fram akkuratt som når man skal spawne inn så flytter man 1 fram fra exit pktet i det forrige rommet til entry pktet i dette rommet.
             rotatedExitSpace.setX(rotatedExitSpace.getBlockX());
             rotatedExitSpace.setZ(rotatedExitSpace.getBlockZ());
             rotatedExitSpace.setYaw(0);
             rotatedExitSpace.setPitch(0);
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Moved: " + Utils.printLocation(rotatedExitSpace));
-            if (dungeon.usedSpaces.contains(rotatedExitSpace)) {
-                return true;
+            if (dungeon.linkLocations.contains(rotatedExitSpace)) { // hvis en av veiene fører rett inn i en ann vei, så connectes de og det går bra
+                return false;
+            } else {
+                moveForward(rotatedExitSpace, dir, roomType.gridSize / 2);
+                if (dungeon.usedSpaces.contains(rotatedExitSpace)) return true; // ellers hvis spacet der er tatt, så er det en vegg der og det går ikke
             }
             //Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + Utils.printLocation(rotatedExitSpace) + " is free, spawing in structure");
             //spawnTextMarker(rotatedExitSpace, ChatColor.LIGHT_PURPLE + "free space");
@@ -179,7 +185,7 @@ public class DungeonStructure {
 
     public boolean availableSpace(Dungeon dungeon, Location loc, Direction dir) {
         // sjekker om det er plass til å spawne denne structuren eller om det er spaces som er opptatt av et annet rom i dungenen.
-        // input lokasjon og retning: exitpkt i forrige rom.
+        // input lokasjon (absolutt) og retning: exitpkt i forrige rom.
         for (Entity e : structure.getEntities()) {
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
             Location loc_ = loc.clone();
@@ -234,7 +240,7 @@ public class DungeonStructure {
                     //Bukkit.broadcastMessage(String.format(ChatColor.AQUA + "Entity rel loc: %s, %s, %s", eLoc.getBlockX(), eLoc.getBlockY(), eLoc.getBlockZ()));
                     rotateLocation(eLoc, dir);
                     //Bukkit.broadcastMessage(String.format(ChatColor.AQUA + "Rotated: %s, %s, %s (%s) and adding node", eLoc.getX(), eLoc.getY(), eLoc.getZ(), dir));
-                    eLoc.add(loc);
+                    eLoc.add(loc); // relativ -> absolutt lokasjon
                     //spawnTextMarker(eLoc, e.getName());
                     dungeon.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(type), structureRotation), RoomType.valueOf(name[1])));
                 }

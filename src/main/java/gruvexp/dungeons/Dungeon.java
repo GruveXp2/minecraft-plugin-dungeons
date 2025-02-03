@@ -12,6 +12,7 @@ public class Dungeon {
     protected final HashMap<RoomType, StructurePool> structurePools = new HashMap<>();
     protected final Queue<SpawnNode> spawnNodeQue = new LinkedList<>(); // liste med SpawnNodes (en spawnnode er en posisjon og retning som det kan spånes et rom fra)
     public final HashSet<Location> usedSpaces = new HashSet<>();
+    public final HashSet<Location> linkLocations = new HashSet<>();
     protected int roomCount = 0;
 
     protected int roomTickCount = 0;
