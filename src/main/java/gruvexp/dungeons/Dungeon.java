@@ -12,6 +12,7 @@ public class Dungeon {
     protected final HashMap<RoomType, StructurePool> structurePools = new HashMap<>();
     protected final Queue<SpawnNode> spawnNodeQue = new LinkedList<>(); // liste med SpawnNodes (en spawnnode er en posisjon og retning som det kan spånes et rom fra)
     public final HashSet<Location> usedSpaces = new HashSet<>();
+    public final HashMap<Location, ReservedSpace> reservedSpaces = new HashMap<>();
     public final HashSet<Location> linkLocations = new HashSet<>();
     protected int roomCount = 0;
 
@@ -23,11 +24,16 @@ public class Dungeon {
     public void makeDungeon(Location location, Direction direction, RoomType roomType, int size) {
         Bukkit.broadcastMessage("spawning dungeon...");
         usedSpaces.clear();
-        spawnNodeQue.add(new SpawnNode(location, direction, roomType));
+        spawnNodeQue.add(new SpawnNode(this, location, direction, roomType));
         maxRooms = size;
         roomCount = 0;
         visualizerPosY = location.getBlockY() + 4;
         nextNode();
+    }
+
+    public void reserveSpace(Location loc, Direction dir) {
+        reservedSpaces.putIfAbsent(loc, new ReservedSpace(loc));
+        reservedSpaces.get(loc).connect(dir);
     }
 
     private void nextNode() {

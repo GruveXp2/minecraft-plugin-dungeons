@@ -23,8 +23,11 @@ public class SpawnNode {
             case W -> ChatColor.AQUA + "West";
             default -> ChatColor.DARK_RED + "Error";
         };
-        this.dirMarker = DungeonManager.spawnTextMarker(location, name, "dungeon_spawn_node");
-        this.typeMarker = DungeonManager.spawnTextMarker(location.clone().subtract(0, -0.25, 0), ChatColor.GRAY + roomType.name(), "dungeon_spawn_node");
+        this.dirMarker = DungeonManager.spawnTextMarker(loc.clone().add(0, 0.5, 0), name, "dungeon_spawn_node");
+        this.typeMarker = DungeonManager.spawnTextMarker(loc.clone().add(0, 0.25, 0), ChatColor.GRAY + roomType.name(), "dungeon_spawn_node");
+        Location reservedLoc = loc.clone();
+        DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2);
+        dungeon.reserveSpace(loc, dir.rotate(RelativeDirection.BACKWARD));
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei

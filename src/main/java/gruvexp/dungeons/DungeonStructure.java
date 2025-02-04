@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.structure.Structure;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class DungeonStructure {
@@ -145,16 +146,16 @@ public class DungeonStructure {
         // sjekker om noen av endepunktene kommer til å kræsje inn i en vegg eller om de passer sammen
         // input absolutt lokasjon: i endepunktet på det forrige rommet. input retning: retninga til exiten i det forrige rommet.
         // gå her for mer info: /tp -471.31 101.00 -364.36
-        loc = loc.clone();
-        DungeonManager.spawnTextMarker(loc, ChatColor.LIGHT_PURPLE + "start1", "conflict");
-        moveForward(loc, dir, 1);
-        moveToOrigin(loc, dir);
-        DungeonManager.spawnTextMarker(loc, ChatColor.LIGHT_PURPLE + "origin2", "conflict");
+        Location locOrigin = loc.clone();
+        DungeonManager.spawnTextMarker(locOrigin, ChatColor.LIGHT_PURPLE + "start1", "conflict");
+        moveForward(locOrigin, dir, 1);
+        moveToOrigin(locOrigin, dir);
+        DungeonManager.spawnTextMarker(locOrigin, ChatColor.LIGHT_PURPLE + "origin2", "conflict");
         for (Map.Entry<Location, RelativeDirection> entry : exitLocations.entrySet()) { // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Raw: " + Utils.printLocation(exitLoc));
             Location rotatedExitSpace = rotateLocation(entry.getKey().clone(), dir);
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Rotated: " + Utils.printLocation(rotatedExitSpace));
-            rotatedExitSpace.add(loc); // gjør om til absolutt lokasjon
+            rotatedExitSpace.add(locOrigin); // gjør om til absolutt lokasjon
             DungeonManager.spawnTextMarker(rotatedExitSpace, ChatColor.LIGHT_PURPLE + "exit3", "conflict");
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Inworld: " + Utils.printLocation(rotatedExitSpace)); // flytter 1 blocc fram akkuratt som når man skal spawne inn så flytter man 1 fram fra exit pktet i det forrige rommet til entry pktet i dette rommet.
             rotatedExitSpace.setX(rotatedExitSpace.getBlockX());
@@ -183,17 +184,34 @@ public class DungeonStructure {
     public boolean availableSpace(Dungeon dungeon, Location loc, Direction dir) {
         // sjekker om det er plass til å spawne denne structuren eller om det er spaces som er opptatt av et annet rom i dungenen.
         // input lokasjon (absolutt) og retning: exitpkt i forrige rom.
+        Location locOrigin = loc.clone();
+        moveForward(locOrigin, dir, 1);
+        moveToOrigin(locOrigin, dir); // origin point for structen i verdenen
         for (Entity e : structure.getEntities()) {
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
-            Location spaceLoc = loc.clone();
-            moveForward(spaceLoc, dir, 1);
-            moveToOrigin(spaceLoc, dir);
-            spaceLoc.add(rotateLocation(e.getLocation(), dir));
-            spaceLoc.setYaw(0);
-            spaceLoc.setPitch(0);
+            Location locSpace = locOrigin.clone();
+            locSpace.add(rotateLocation(e.getLocation(), dir));
+            locSpace.setYaw(0);
+            locSpace.setPitch(0);
 
-            if (dungeon.usedSpaces.contains(spaceLoc)) {
+            if (dungeon.usedSpaces.contains(locSpace)) {
                 return false;
+            } else if (dungeon.reservedSpaces.containsKey(locSpace)) {
+                ReservedSpace space = dungeon.reservedSpaces.get(locSpace);
+                for (Direction connectionDir : space.getConnections()) {
+                    Location connectionLoc = locSpace.clone(); // hvor det skjekkes om er et exit point
+                    moveForward(connectionLoc, connectionDir, roomType.gridSize/2);
+                    boolean hasConnection = false; // hvis det er en reservert plass, så forteller denne om det går ut en vei som connecter med den som reserverte
+                    for (Location exitLoc : exitLocations.keySet()) {
+                        Location exitLocAbs = rotateLocation(exitLoc.clone(), dir);
+                        exitLocAbs.add(locOrigin);
+                        if (exitLocAbs.equals(connectionLoc)) {
+                            hasConnection = true;
+                            break;
+                        }
+                    }
+                    if (!hasConnection) return false; // hvis det ikke er en node i retninga som er reservert, så blir det ikke connection
+                }
             }
         }
         return true;
