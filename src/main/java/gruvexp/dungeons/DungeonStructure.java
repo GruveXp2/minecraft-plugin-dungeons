@@ -19,7 +19,7 @@ public class DungeonStructure {
     private final Structure structure;
     private final Structure structureVisualization; //Fun
     private final Coord entry;
-    public final HashMap<Location, Direction> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
+    public final HashMap<Location, RelativeDirection> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
     public final RoomType roomType;
 
     public DungeonStructure(String structureGroup, String structureName, Coord entry, RoomType roomType) {
@@ -38,16 +38,15 @@ public class DungeonStructure {
                     Location eLoc = e.getLocation();
                     eLoc.setX(eLoc.getBlockX());
                     eLoc.setZ(eLoc.getBlockZ());
-                    Direction dir = Direction.fromString(directionStr);
-                    moveForward(eLoc, toAbsoluteDirection(dir), (roomType.gridSize + 1) / 2);
+                    RelativeDirection dir = RelativeDirection.fromString(directionStr);
                     exitLocations.put(eLoc, dir);
                 }
             }
         }
     }
 
-    private static Direction rotateNode(Direction dir, StructureRotation structureRotation) {
-        dir = toAbsoluteDirection(dir);
+    private static Direction rotateNode(RelativeDirection relDir, StructureRotation structureRotation) {
+        Direction dir = relDir.toAbsoluteDirection();
         switch (structureRotation) {
             case NONE -> {
                 return dir;
@@ -120,18 +119,6 @@ public class DungeonStructure {
             case E, EW -> loc.add(blocks, 0, 0);
             default -> throw new IllegalArgumentException("Illegal direction: " + dir + " (Dungeonstructure:118)");
         }
-    }
-
-    private static Direction toAbsoluteDirection(Direction relDir) {
-        return switch (relDir) {
-            case FORWARD -> Direction.S;
-            case RIGHT -> Direction.W;
-            case LEFT -> Direction.E;
-            case BACKWARD -> Direction.N;
-            case FB -> Direction.NS;
-            case RL -> Direction.EW;
-            default -> throw new IllegalArgumentException("Illegal direction: \"" + relDir + "\" (DungeonStructure:129)");
-        };
     }
 
     public static void spawnTextMarker(Location loc, String name, String tag) {
@@ -242,7 +229,9 @@ public class DungeonStructure {
                     //Bukkit.broadcastMessage(String.format(ChatColor.AQUA + "Rotated: %s, %s, %s (%s) and adding node", eLoc.getX(), eLoc.getY(), eLoc.getZ(), dir));
                     eLoc.add(loc); // relativ -> absolutt lokasjon
                     //spawnTextMarker(eLoc, e.getName());
-                    dungeon.addNode(new SpawnNode(eLoc, rotateNode(Direction.fromString(type), structureRotation), RoomType.valueOf(name[1])));
+                    RelativeDirection relDir = RelativeDirection.fromString(type);
+                    Direction spawnNodeDir = dir.rotate(relDir);
+                    dungeon.addNode(new SpawnNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1])));
                 }
                 case "Space" -> {
                     Location eLoc = e.getLocation();
@@ -256,8 +245,8 @@ public class DungeonStructure {
                 }
                 case "Wall FB", "Wall RL" -> {
                     String wallDirStr = type.substring(type.length() - 2);
-                    Direction wallDir = Direction.fromString(wallDirStr);
-                    wallDir = rotateNode(wallDir, structureRotation); // inkluderer absolutt rotasjon
+                    RelativeDirection wallRelDir = RelativeDirection.fromString(wallDirStr);
+                    Direction wallDir = rotateNode(wallRelDir, structureRotation); // inkluderer absolutt rotasjon
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
@@ -265,8 +254,8 @@ public class DungeonStructure {
                 }
                 case "Iron Arch FB", "Iron Arch RL" -> {
                     String archDirStr = type.substring(type.length() - 2);
-                    Direction archDir = Direction.fromString(archDirStr);
-                    archDir = rotateNode(archDir, structureRotation);
+                    RelativeDirection archRelDir = RelativeDirection.fromString(archDirStr);
+                    Direction archDir = rotateNode(archRelDir, structureRotation);
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
                     eLoc.add(loc);
