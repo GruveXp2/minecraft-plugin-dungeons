@@ -26,7 +26,7 @@ public class SpawnNode {
         this.dirMarker = DungeonManager.spawnTextMarker(loc.clone().add(0, 0.5, 0), name, "dungeon_spawn_node");
         this.typeMarker = DungeonManager.spawnTextMarker(loc.clone().add(0, 0.25, 0), ChatColor.GRAY + roomType.name(), "dungeon_spawn_node");
         Location reservedLoc = loc.clone();
-        DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2);
+        DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2 + 1);
         dungeon.reserveSpace(reservedLoc, dir.rotate(RelativeDirection.BACKWARD));
     }
 
