@@ -2,7 +2,7 @@ package gruvexp.dungeons;
 
 public enum GrowRate {
 
-    SHRINKING(0), STATIC(1), EXPANDING(2);
+    END(0), STATIC(1), EXPANDING(2);
 
     private final int spread;
 

@@ -10,10 +10,10 @@ public class StructurePool {
     private final Map<GrowRate, Integer> structureWeights = new HashMap<>();
 
     public StructurePool() {
-        structures.put(GrowRate.SHRINKING, new HashMap<>());
+        structures.put(GrowRate.END, new HashMap<>());
         structures.put(GrowRate.STATIC, new HashMap<>());
         structures.put(GrowRate.EXPANDING, new HashMap<>());
-        structureWeights.put(GrowRate.SHRINKING, 0);
+        structureWeights.put(GrowRate.END, 0);
         structureWeights.put(GrowRate.STATIC, 0);
         structureWeights.put(GrowRate.EXPANDING, 0);
     }

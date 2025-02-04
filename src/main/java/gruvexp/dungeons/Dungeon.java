@@ -133,12 +133,12 @@ public class Dungeon {
             if (spawnNodeQue.size() < 15 && expansionRate == 0) {
                 return GrowRate.EXPANDING; // hvis det er for lite noder så ekspanderer vi
             } else if (spawnNodeQue.size() > 25 && expansionRate == 2) {
-                return GrowRate.SHRINKING; // hvis det er for mange noder så reduserer vi
+                return GrowRate.END; // hvis det er for mange noder så reduserer vi
             }
         } else {
             expansionRate = RANDOM.nextInt(40);
             if (expansionRate < 2) {
-                return GrowRate.SHRINKING; // 4% 0, 94% 1, 2% 2
+                return GrowRate.END; // 4% 0, 94% 1, 2% 2
             } else if (expansionRate == 39) {
                 return GrowRate.EXPANDING;
             } else {
@@ -146,7 +146,7 @@ public class Dungeon {
             }
         }
         return switch (expansionRate) {
-            case 0 -> GrowRate.SHRINKING;
+            case 0 -> GrowRate.END;
             case 1 -> GrowRate.STATIC;
             case 2 -> GrowRate.EXPANDING;
             default -> throw new IllegalStateException("Unexpected value: " + expansionRate);

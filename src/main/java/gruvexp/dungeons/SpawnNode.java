@@ -41,7 +41,7 @@ public class SpawnNode {
         StructurePool pool = dungeon.structurePools.get(roomType);
         DungeonStructure dungeonStructure = pool.getRandomStructure(growRate).structure();
         if (dungeonStructure.availableSpace(dungeon, location, direction)) {
-            if (growRate != GrowRate.SHRINKING && dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
+            if (growRate != GrowRate.END && dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
                 Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");
                 tries++;
                 if (tries < 6) {
@@ -51,7 +51,7 @@ public class SpawnNode {
                     if (growRate == GrowRate.EXPANDING) {
                         spawn(GrowRate.STATIC, dungeon);
                     } else if (growRate == GrowRate.STATIC) {
-                        spawn(GrowRate.SHRINKING, dungeon);
+                        spawn(GrowRate.END, dungeon);
                     }
                 }
             } else {
