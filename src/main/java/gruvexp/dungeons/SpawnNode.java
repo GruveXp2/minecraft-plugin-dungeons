@@ -27,7 +27,7 @@ public class SpawnNode {
         this.typeMarker = DungeonManager.spawnTextMarker(loc.clone().add(0, 0.25, 0), ChatColor.GRAY + roomType.name(), "dungeon_spawn_node");
         Location reservedLoc = loc.clone();
         DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2);
-        dungeon.reserveSpace(loc, dir.rotate(RelativeDirection.BACKWARD));
+        dungeon.reserveSpace(reservedLoc, dir.rotate(RelativeDirection.BACKWARD));
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
