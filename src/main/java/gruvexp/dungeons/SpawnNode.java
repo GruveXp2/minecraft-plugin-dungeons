@@ -38,12 +38,11 @@ public class SpawnNode {
     }
 
     private void spawn(GrowRate growRate, Dungeon dungeon) {
-
         StructurePool pool = dungeon.structurePools.get(roomType);
         DungeonStructure dungeonStructure = pool.getRandomStructure(growRate).structure();
         if (dungeonStructure.availableSpace(dungeon, location, direction)) {
-            if (growRate != GrowRate.SHRINKING && tries < 5 && dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
-                //Bukkit.broadcastMessage("Room " + randomNumber + " has conflixting exits, trying different room");
+            if (growRate != GrowRate.SHRINKING && dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
+                Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");
                 tries++;
                 if (tries < 6) {
                     spawn(growRate, dungeon);
@@ -55,10 +54,10 @@ public class SpawnNode {
                         spawn(GrowRate.SHRINKING, dungeon);
                     }
                 }
-                return;
+            } else {
+                Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), dungeonStructure.name));
+                dungeonStructure.place(dungeon, location, direction);
             }
-            //Bukkit.broadcastMessage(String.format("Spawning room %s:%s", spread, randomNumber));
-            dungeonStructure.place(dungeon, location, direction);
         } else {
             if (!Room.END.structure().availableSpace(dungeon, location, direction)) {
                 //Bukkit.broadcastMessage("No space for a room to generate, spawning wall");
