@@ -15,7 +15,7 @@ public enum Room {
     // fortress
     FORTRESS_BRIDGE_BOW_F(new DungeonStructure("fortress", "bridge/bow_f", new Coord(2, 6, 0), RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
     FORTRESS_BRIDGE_F(new DungeonStructure("fortress", "bridge/f", new Coord(2, 5, 0), RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
-    FORTRESS_BRIDGE_END(new DungeonStructure("fortress", "bridge/end", new Coord(2, 5, 0), RoomType.FORTRESS_BRIDGE), GrowRate.SHRINKING),
+    FORTRESS_BRIDGE_END(new DungeonStructure("fortress", "bridge/end", new Coord(2, 5, 0), RoomType.FORTRESS_BRIDGE), GrowRate.END),
     FORTRESS_BRIDGE_BOW_INTER(new DungeonStructure("fortress", "bridge/bow_x", new Coord(10, 6, 0), RoomType.FORTRESS_BRIDGE), GrowRate.EXPANDING),
     FORTRESS_BRIDGE_INTER(new DungeonStructure("fortress", "bridge/x", new Coord(3, 1, 0), RoomType.FORTRESS_BRIDGE), GrowRate.EXPANDING),
     FORTRESS_BRIDGE_BLAZE(new DungeonStructure("fortress", "bridge/blaze", new Coord(3, 3, 0), RoomType.FORTRESS_BRIDGE), GrowRate.END),
