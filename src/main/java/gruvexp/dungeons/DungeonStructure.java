@@ -133,10 +133,10 @@ public class DungeonStructure {
         // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkurat passer med utanga til den forrige strukturen
         // så den flyttes til ett av hjørnene av strukturen som er det hjørnet med lavest xyz verdi i library verdenen
         switch (dir) {
-            case N -> loc.add(entry.x, -entry.y, entry.z);
+            case N -> loc.add( entry.x, -entry.y,  entry.z);
             case S -> loc.add(-entry.x, -entry.y, -entry.z);
-            case E -> loc.add(-entry.z, -entry.y, entry.x);
-            case W -> loc.add(entry.z, -entry.y, -entry.x);
+            case E -> loc.add(-entry.z, -entry.y,  entry.x);
+            case W -> loc.add( entry.z, -entry.y, -entry.x);
             default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:148)");
         }
     }
@@ -185,14 +185,14 @@ public class DungeonStructure {
         // input lokasjon (absolutt) og retning: exitpkt i forrige rom.
         for (Entity e : structure.getEntities()) {
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
-            Location loc_ = loc.clone();
-            moveForward(loc_, dir, 1);
-            moveToOrigin(loc_, dir);
-            loc_.add(rotateLocation(e.getLocation(), dir));
-            loc_.setYaw(0);
-            loc_.setPitch(0);
+            Location spaceLoc = loc.clone();
+            moveForward(spaceLoc, dir, 1);
+            moveToOrigin(spaceLoc, dir);
+            spaceLoc.add(rotateLocation(e.getLocation(), dir));
+            spaceLoc.setYaw(0);
+            spaceLoc.setPitch(0);
 
-            if (dungeon.usedSpaces.contains(loc_)) {
+            if (dungeon.usedSpaces.contains(spaceLoc)) {
                 return false;
             }
         }

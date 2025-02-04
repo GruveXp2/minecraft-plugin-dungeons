@@ -140,10 +140,10 @@ public class Dungeon {
             }
         }
         return switch (expansionRate) {
-            case 0: yield GrowRate.SHRINKING;
-            case 1: yield GrowRate.STATIC;
-            case 2: yield GrowRate.EXPANDING;
-            default: throw new IllegalStateException("Unexpected value: " + expansionRate);
+            case 0 -> GrowRate.SHRINKING;
+            case 1 -> GrowRate.STATIC;
+            case 2 -> GrowRate.EXPANDING;
+            default -> throw new IllegalStateException("Unexpected value: " + expansionRate);
         };
     }
 
