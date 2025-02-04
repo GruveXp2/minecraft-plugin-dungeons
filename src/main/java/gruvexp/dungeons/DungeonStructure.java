@@ -145,24 +145,34 @@ public class DungeonStructure {
         // sjekker om noen av endepunktene kommer til å kræsje inn i en vegg eller om de passer sammen
         // input absolutt lokasjon: i endepunktet på det forrige rommet. input retning: retninga til exiten i det forrige rommet.
         // gå her for mer info: /tp -471.31 101.00 -364.36
-        for (Location exitLoc : exitLocations.keySet()) { // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
+        loc = loc.clone();
+        DungeonManager.spawnTextMarker(loc, ChatColor.LIGHT_PURPLE + "start1", "conflict");
+        moveForward(loc, dir, 1);
+        moveToOrigin(loc, dir);
+        DungeonManager.spawnTextMarker(loc, ChatColor.LIGHT_PURPLE + "origin2", "conflict");
+        for (Map.Entry<Location, RelativeDirection> entry : exitLocations.entrySet()) { // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Raw: " + Utils.printLocation(exitLoc));
-            Location rotatedExitSpace = rotateLocation(exitLoc.clone(), dir);
+            Location rotatedExitSpace = rotateLocation(entry.getKey().clone(), dir);
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Rotated: " + Utils.printLocation(rotatedExitSpace));
             rotatedExitSpace.add(loc); // gjør om til absolutt lokasjon
-            //Bukkit.broadcastMessage(ChatColor.GREEN + "Inworld: " + Utils.printLocation(rotatedExitSpace));
-            moveToOrigin(rotatedExitSpace, dir);
-            moveForward(rotatedExitSpace, dir, 1); // flytter 1 blocc fram akkuratt som når man skal spawne inn så flytter man 1 fram fra exit pktet i det forrige rommet til entry pktet i dette rommet.
+            DungeonManager.spawnTextMarker(rotatedExitSpace, ChatColor.LIGHT_PURPLE + "exit3", "conflict");
+            //Bukkit.broadcastMessage(ChatColor.GREEN + "Inworld: " + Utils.printLocation(rotatedExitSpace)); // flytter 1 blocc fram akkuratt som når man skal spawne inn så flytter man 1 fram fra exit pktet i det forrige rommet til entry pktet i dette rommet.
             rotatedExitSpace.setX(rotatedExitSpace.getBlockX());
             rotatedExitSpace.setZ(rotatedExitSpace.getBlockZ());
             rotatedExitSpace.setYaw(0);
             rotatedExitSpace.setPitch(0);
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Moved: " + Utils.printLocation(rotatedExitSpace));
             if (dungeon.linkLocations.contains(rotatedExitSpace)) { // hvis en av veiene fører rett inn i en ann vei, så connectes de og det går bra
+                DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1, 0), ChatColor.YELLOW + "Link", "conflict");
                 return false;
             } else {
-                moveForward(rotatedExitSpace, dir, roomType.gridSize / 2);
-                if (dungeon.usedSpaces.contains(rotatedExitSpace)) return true; // ellers hvis spacet der er tatt, så er det en vegg der og det går ikke
+                RelativeDirection relExitDir = entry.getValue();
+                moveForward(rotatedExitSpace, dir.rotate(relExitDir), roomType.gridSize / 2 + 1);
+                if (dungeon.usedSpaces.contains(rotatedExitSpace)) {
+                    DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1, 0), ChatColor.RED + "Conflict", "conflict");
+                    return true; // ellers hvis spacet der er tatt, så er det en vegg der og det går ikke
+                }
+                DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1, 0), ChatColor.GREEN + "No conflict", "conflict");
             }
             //Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + Utils.printLocation(rotatedExitSpace) + " is free, spawing in structure");
             //spawnTextMarker(rotatedExitSpace, ChatColor.LIGHT_PURPLE + "free space");
