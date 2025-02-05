@@ -1,18 +1,27 @@
 package gruvexp.dungeons;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
 public class StructurePool {
 
-    private final Map<GrowRate, Map<Room, Integer>> structures = new HashMap<>();
+    private final Map<GrowRate, Map<Room, Integer>> structuresMap = new HashMap<>();
+    private final Map<Room, Integer> structures = new HashMap<>();
     private final Map<GrowRate, Integer> structureWeights = new HashMap<>();
 
+    public int getTotalStructures() {
+        return totalStructures;
+    }
+
+    private int totalStructures = 0;
+
+
     public StructurePool() {
-        structures.put(GrowRate.END, new HashMap<>());
-        structures.put(GrowRate.STATIC, new HashMap<>());
-        structures.put(GrowRate.EXPANDING, new HashMap<>());
+        structuresMap.put(GrowRate.END, new HashMap<>());
+        structuresMap.put(GrowRate.STATIC, new HashMap<>());
+        structuresMap.put(GrowRate.EXPANDING, new HashMap<>());
         structureWeights.put(GrowRate.END, 0);
         structureWeights.put(GrowRate.STATIC, 0);
         structureWeights.put(GrowRate.EXPANDING, 0);
@@ -20,29 +29,39 @@ public class StructurePool {
 
     public void addStructure(Room room, int weight) {
         GrowRate growRate = room.growRate;
-        structures.get(growRate).put(room, weight);
+        structuresMap.get(growRate).put(room, weight);
+        structures.put(room, weight);
         structureWeights.put(growRate, structureWeights.get(growRate) + weight);
+        totalStructures++;
     }
 
     public void updateWeight(Room room, int newWeight) {
         GrowRate growRate = room.growRate;
-        if (structures.get(growRate).containsKey(room)) {
-            structureWeights.put(growRate, structureWeights.get(growRate) + structures.get(growRate).get(room));
-            structures.get(growRate).put(room, newWeight);
+        if (structuresMap.get(growRate).containsKey(room)) {
+            structureWeights.put(growRate, structureWeights.get(growRate) + structuresMap.get(growRate).get(room));
+            structuresMap.get(growRate).put(room, newWeight);
+            structures.put(room, newWeight);
             structureWeights.put(growRate, structureWeights.get(growRate) + newWeight);
         }
     }
 
-    public Room getRandomStructure(GrowRate growRate) {
-        //System.out.println("growrate is " + growRate.name());
-        int roll = new Random().nextInt(structureWeights.get(growRate)); // random tall mellom 0 og totalWeight
-        //System.out.println("total weight: " + structureWeights.get(growRate) + ", roll=" + roll);
+    public Room getRandomStructure(GrowRate growRate, HashSet<Room> bannedRooms) {
+        // velger et random rom. growRate er gruppa man vil selecte rom fra, men det er mulig at hvilket som helst rom kan bli selecta
+        // men rom fra growRate har 10x sjangs for å bli valgt
+        // bannedRooms er rom som ikke kan bli brukt enten fordi de ikke passer med det forrige rommet eller hvis de ikke har plass/lov til å spawne
+        int totalWeight = structureWeights.values().stream().mapToInt(Integer::intValue).sum();
+        totalWeight += structureWeights.get(growRate) * 9; // den ene har 10x sjangs
+        for (Room bannedRoom : bannedRooms) {
+            totalWeight -= structures.get(bannedRoom) * (bannedRoom.growRate == growRate ? 10 : 1);
+        }
+        int roll = new Random().nextInt(totalWeight);
         int currentWeight = 0;
-
-        for (Map.Entry<Room, Integer> entry : structures.get(growRate).entrySet()) {
-            currentWeight += entry.getValue();
+        for (Map.Entry<Room, Integer> entry : structures.entrySet()) {
+            Room room = entry.getKey();
+            if (bannedRooms.contains(room)) continue;
+            currentWeight += entry.getValue() * (room.growRate == growRate ? 10 : 1);;
             if (roll < currentWeight) { // hvis man setter alle rommene og weightsene etterhverandre, så velges den strukturen som er roll avstand fra start
-                return entry.getKey();
+                return room;
             }
         }
         return null;

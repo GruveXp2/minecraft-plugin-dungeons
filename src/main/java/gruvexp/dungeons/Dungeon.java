@@ -1,5 +1,7 @@
 package gruvexp.dungeons;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,7 +26,7 @@ public class Dungeon {
     public void makeDungeon(Location location, Direction direction, RoomType roomType, int size) {
         Bukkit.broadcastMessage("spawning dungeon...");
         usedSpaces.clear();
-        spawnNodeQue.add(new SpawnNode(this, location, direction, roomType));
+        spawnNodeQue.add(new SpawnNode(this, location, direction, roomType, new HashSet<>()));
         maxRooms = size;
         roomCount = 0;
         visualizerPosY = location.getBlockY() + 4;

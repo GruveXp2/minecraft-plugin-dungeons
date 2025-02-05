@@ -199,6 +199,7 @@ public class DungeonStructure {
             } else if (dungeon.reservedSpaces.containsKey(locSpace)) {
                 ReservedSpace space = dungeon.reservedSpaces.get(locSpace);
                 for (Direction connectionDir : space.getConnections()) {
+                    if (connectionDir.rotate(RelativeDirection.BACKWARD) == dir) continue; // strukturens entrypoint håndterer allerede den retninga, ikke exit pointsene
                     Location connectionLoc = locSpace.clone(); // hvor det skjekkes om er et exit point
                     moveForward(connectionLoc, connectionDir, roomType.gridSize/2);
                     boolean hasConnection = false; // hvis det er en reservert plass, så forteller denne om det går ut en vei som connecter med den som reserverte
@@ -210,7 +211,10 @@ public class DungeonStructure {
                             break;
                         }
                     }
-                    if (!hasConnection) return false; // hvis det ikke er en node i retninga som er reservert, så blir det ikke connection
+                    if (!hasConnection) {
+                        Bukkit.broadcast(Component.text("This room is missing exit points that matches all reserved connections", NamedTextColor.GRAY));
+                        return false; // hvis det ikke er en node i retninga som er reservert, så blir det ikke connection
+                    }
                 }
             }
         }
@@ -259,7 +263,15 @@ public class DungeonStructure {
                     //spawnTextMarker(eLoc, e.getName());
                     RelativeDirection relDir = RelativeDirection.fromString(type);
                     Direction spawnNodeDir = dir.rotate(relDir);
-                    dungeon.addNode(new SpawnNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1])));
+                    HashSet<Room> bannedRooms = new HashSet<>();
+                    for (int i = 2; i < name.length; i++) {
+                        String attr = name[i];
+                        if (attr.charAt(0) == '!') {
+                            String room = attr.substring(1).toUpperCase();
+                            bannedRooms.add(Room.valueOf(roomType.name() + "_" + room));
+                        }
+                    }
+                    dungeon.addNode(new SpawnNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1]), bannedRooms));
                 }
                 case "Space" -> {
                     Location eLoc = e.getLocation();

@@ -1,21 +1,27 @@
 package gruvexp.dungeons;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.TextDisplay;
 
+import java.util.HashSet;
+
 public class SpawnNode {
     private final Location location;
-    private Direction direction;
+    private final Direction direction;
     private final RoomType roomType;
+    private final HashSet<Room> bannedRooms; // rommet som denne spawn noda kom fra
     private final TextDisplay dirMarker;
     private final TextDisplay typeMarker;
-    int tries = 0;
-    public SpawnNode(Dungeon dungeon, Location loc, Direction dir, RoomType roomType) {
+
+    public SpawnNode(Dungeon dungeon, Location loc, Direction dir, RoomType roomType, HashSet<Room> bannedRooms) {
         this.location = loc;
         this.direction = dir;
         this.roomType = roomType;
+        this.bannedRooms = bannedRooms;
         String name = switch (dir) {
             case N -> ChatColor.BLUE + "North";
             case S -> ChatColor.RED + "South";
@@ -32,49 +38,31 @@ public class SpawnNode {
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
         GrowRate growRate = dungeon.getRandomExpansionRate();
-        spawn(growRate, dungeon);
+        spawn(growRate, dungeon, bannedRooms);
         dirMarker.remove();
         typeMarker.remove();
     }
 
-    private void spawn(GrowRate growRate, Dungeon dungeon) {
+    private void spawn(GrowRate growRate, Dungeon dungeon, HashSet<Room> bannedRooms) {
         StructurePool pool = dungeon.structurePools.get(roomType);
-        DungeonStructure dungeonStructure = pool.getRandomStructure(growRate).structure();
+        Room randomRoom = pool.getRandomStructure(growRate, bannedRooms);
+        if (randomRoom == null) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Failed to spawn a room here, no space for it");
+            return;
+        }
+        DungeonStructure dungeonStructure = randomRoom.structure();
+        Bukkit.broadcast(Component.text("Trying room " + dungeonStructure.name, NamedTextColor.GRAY));
         if (dungeonStructure.availableSpace(dungeon, location, direction)) {
-            if (growRate != GrowRate.END && dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
-                Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");
-                tries++;
-                if (tries < 6) {
-                    spawn(growRate, dungeon);
-                } else {
-                    tries = 0;
-                    if (growRate == GrowRate.EXPANDING) {
-                        spawn(GrowRate.STATIC, dungeon);
-                    } else if (growRate == GrowRate.STATIC) {
-                        spawn(GrowRate.END, dungeon);
-                    }
-                }
-            } else {
+            Bukkit.broadcast(Component.text("space is available", NamedTextColor.GRAY));
+            if (!dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
                 Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), dungeonStructure.name));
                 dungeonStructure.place(dungeon, location, direction);
-            }
-        } else {
-            if (!Room.END.structure().availableSpace(dungeon, location, direction)) {
-                //Bukkit.broadcastMessage("No space for a room to generate, spawning wall");
-                switch (direction) {
-                    case N, S -> direction = Direction.NS;
-                    case E, W -> direction = Direction.EW;
-                }
-                DungeonManager.walls.put(location, new SpawnFeature(direction, location, Feature.WALL));
                 return;
+            } else {
+                Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");
             }
-            if (tries > 10) {
-                Bukkit.broadcastMessage(ChatColor.RED + "BUG! The code shouldnt reach this line");
-                return;
-            }
-            //Bukkit.broadcastMessage("Not enough space, trying another room");
-            tries++;
-            spawn(growRate, dungeon);
         }
+        bannedRooms.add(randomRoom);
+        spawn(growRate, dungeon, bannedRooms);
     }
 }
