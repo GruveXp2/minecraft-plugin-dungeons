@@ -1,5 +1,7 @@
 package gruvexp.dungeons;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
@@ -13,6 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.structure.Structure;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,9 +25,11 @@ public class DungeonStructure {
     private final Coord entry;
     public final HashMap<Location, RelativeDirection> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
     public final RoomType roomType;
+    public final String name;
 
     public DungeonStructure(String structureGroup, String structureName, Coord entry, RoomType roomType) {
         this.roomType = roomType;
+        this.name = structureName;
         structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, structureName));
         structureVisualization = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, "_" + structureName)); //Fun
         if (structure == null) {
@@ -147,7 +152,7 @@ public class DungeonStructure {
         // input absolutt lokasjon: i endepunktet på det forrige rommet. input retning: retninga til exiten i det forrige rommet.
         // gå her for mer info: /tp -471.31 101.00 -364.36
         Location locOrigin = loc.clone();
-        DungeonManager.spawnTextMarker(locOrigin, ChatColor.LIGHT_PURPLE + "start1", "conflict");
+        //DungeonManager.spawnTextMarker(locOrigin, ChatColor.LIGHT_PURPLE + "start1", "conflict");
         moveForward(locOrigin, dir, 1);
         moveToOrigin(locOrigin, dir);
         DungeonManager.spawnTextMarker(locOrigin, ChatColor.LIGHT_PURPLE + "origin2", "conflict");
@@ -164,16 +169,16 @@ public class DungeonStructure {
             rotatedExitSpace.setPitch(0);
             //Bukkit.broadcastMessage(ChatColor.GREEN + "Moved: " + Utils.printLocation(rotatedExitSpace));
             if (dungeon.linkLocations.contains(rotatedExitSpace)) { // hvis en av veiene fører rett inn i en ann vei, så connectes de og det går bra
-                DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1, 0), ChatColor.YELLOW + "Link", "conflict");
+                DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1.25, 0), ChatColor.YELLOW + "Link", "conflict");
                 return false;
             } else {
                 RelativeDirection relExitDir = entry.getValue();
                 moveForward(rotatedExitSpace, dir.rotate(relExitDir), roomType.gridSize / 2 + 1);
                 if (dungeon.usedSpaces.contains(rotatedExitSpace)) {
-                    DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1, 0), ChatColor.RED + "Conflict", "conflict");
+                    DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1.25, 0), ChatColor.RED + "Conflict", "conflict");
                     return true; // ellers hvis spacet der er tatt, så er det en vegg der og det går ikke
                 }
-                DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1, 0), ChatColor.GREEN + "No conflict", "conflict");
+                DungeonManager.spawnTextMarker(rotatedExitSpace.add(0, 1.25, 0), ChatColor.GREEN + "No conflict", "conflict");
             }
             //Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + Utils.printLocation(rotatedExitSpace) + " is free, spawing in structure");
             //spawnTextMarker(rotatedExitSpace, ChatColor.LIGHT_PURPLE + "free space");
@@ -195,6 +200,7 @@ public class DungeonStructure {
             locSpace.setPitch(0);
 
             if (dungeon.usedSpaces.contains(locSpace)) {
+                Bukkit.broadcast(Component.text("No space for this room, another room already generated there", NamedTextColor.GRAY));
                 return false;
             } else if (dungeon.reservedSpaces.containsKey(locSpace)) {
                 ReservedSpace space = dungeon.reservedSpaces.get(locSpace);
@@ -202,13 +208,17 @@ public class DungeonStructure {
                     if (connectionDir.rotate(RelativeDirection.BACKWARD) == dir) continue; // strukturens entrypoint håndterer allerede den retninga, ikke exit pointsene
                     Location connectionLoc = locSpace.clone(); // hvor det skjekkes om er et exit point
                     moveForward(connectionLoc, connectionDir, roomType.gridSize/2);
+                    DungeonManager.spawnTextMarker(connectionLoc.clone().add(0, 0.1, 0), ChatColor.GRAY + "check", "check");
                     boolean hasConnection = false; // hvis det er en reservert plass, så forteller denne om det går ut en vei som connecter med den som reserverte
                     for (Location exitLoc : exitLocations.keySet()) {
                         Location exitLocAbs = rotateLocation(exitLoc.clone(), dir);
                         exitLocAbs.add(locOrigin);
                         if (exitLocAbs.equals(connectionLoc)) {
                             hasConnection = true;
+                            DungeonManager.spawnTextMarker(connectionLoc.clone().add(0, 0.1, 0), ChatColor.GREEN + "match", "check");
                             break;
+                        } else {
+                            DungeonManager.spawnTextMarker(connectionLoc.clone().add(0, 0.1, 0), ChatColor.RED + "!match", "check");
                         }
                     }
                     if (!hasConnection) {

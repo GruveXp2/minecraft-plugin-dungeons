@@ -125,9 +125,9 @@ public class Dungeon {
         //               dette er for å gjøre det lettere å finne dungeonen, ved at man kan finne en lang sidegang som fører inn til midten
 
         int expansionRate;
-        if (roomCount < 50) {
+        if (roomCount < 20) {
             expansionRate = RANDOM.nextInt(2) + 1; // 50% 1, 50% 2.
-        } else if (roomCount < 200) {
+        } else if (roomCount < 50) {
             expansionRate = RANDOM.nextInt(4);
             if (expansionRate > 1) {
                 expansionRate -= 1; // 25% 0, 50% 1, 25% 2.
@@ -138,10 +138,10 @@ public class Dungeon {
                 return GrowRate.END; // hvis det er for mange noder så reduserer vi
             }
         } else {
-            expansionRate = RANDOM.nextInt(40);
+            expansionRate = RANDOM.nextInt(20); // 40
             if (expansionRate < 2) {
                 return GrowRate.END; // 4% 0, 94% 1, 2% 2
-            } else if (expansionRate == 39) {
+            } else if (expansionRate == 19) { // 39
                 return GrowRate.EXPANDING;
             } else {
                 return GrowRate.STATIC;
@@ -157,6 +157,7 @@ public class Dungeon {
 
 public void manualNextNode() {
         if (manualSpawn) {
+            Bukkit.broadcast(Component.text("========Next Node========", NamedTextColor.YELLOW));
             nextNode();
         }
     }
