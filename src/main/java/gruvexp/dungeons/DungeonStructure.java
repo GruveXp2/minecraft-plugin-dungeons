@@ -223,26 +223,11 @@ public class DungeonStructure {
 
     public void place(Dungeon dungeon, Location loc, Direction dir) {
         //Bukkit.broadcastMessage(String.format("Initial origin: %s, %s, %s", location.getX(), location.getY(), location.getZ()));
-        StructureRotation structureRotation;
-        switch (dir) {
-            case N -> {
-                loc.add(entry.x, -entry.y, entry.z - 1);
-                structureRotation = StructureRotation.CLOCKWISE_180;
-            }
-            case S -> {
-                loc.add(-entry.x, -entry.y, -entry.z + 1);
-                structureRotation = StructureRotation.NONE;
-            }
-            case E -> {
-                loc.add(-entry.z + 1, -entry.y, entry.x);
-                structureRotation = StructureRotation.COUNTERCLOCKWISE_90;
-            }
-            case W -> {
-                loc.add(entry.z - 1, -entry.y, -entry.x);
-                structureRotation = StructureRotation.CLOCKWISE_90;
-            }
-            default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:212)");
-        }
+        //DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "start", "conflict");
+        moveForward(loc, dir, 1);
+        moveToOrigin(loc, dir);
+        DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "origin", "conflict");
+        StructureRotation structureRotation = dir.toStructureRotation();
         //Bukkit.broadcastMessage(String.format("Origin moved to: %s, %s, %s (%s)", location.getX(), location.getY(), location.getZ(), dir));
         structure.place(loc, false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM);
         //Fun
