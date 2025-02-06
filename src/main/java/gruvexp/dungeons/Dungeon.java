@@ -125,9 +125,9 @@ public class Dungeon {
         //               dette er for å gjøre det lettere å finne dungeonen, ved at man kan finne en lang sidegang som fører inn til midten
 
         int expansionRate;
-        if (roomCount < 20) {
+        if (roomCount < 12) {
             expansionRate = RANDOM.nextInt(2) + 1; // 50% 1, 50% 2.
-        } else if (roomCount < 50) {
+        } else if (roomCount < 32) {
             expansionRate = RANDOM.nextInt(4);
             if (expansionRate > 1) {
                 expansionRate -= 1; // 25% 0, 50% 1, 25% 2.
@@ -137,7 +137,7 @@ public class Dungeon {
             } else if (spawnNodeQue.size() > 25 && expansionRate == 2) {
                 return GrowRate.END; // hvis det er for mange noder så reduserer vi
             }
-        } else {
+        } else if (roomCount < 64) {
             expansionRate = RANDOM.nextInt(20); // 40
             if (expansionRate < 2) {
                 return GrowRate.END; // 4% 0, 94% 1, 2% 2
@@ -146,6 +146,8 @@ public class Dungeon {
             } else {
                 return GrowRate.STATIC;
             }
+        } else {
+            return GrowRate.END;
         }
         return switch (expansionRate) {
             case 0 -> GrowRate.END;
