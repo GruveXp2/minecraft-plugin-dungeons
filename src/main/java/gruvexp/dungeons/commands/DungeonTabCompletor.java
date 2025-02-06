@@ -1,6 +1,7 @@
 package gruvexp.dungeons.commands;
 
 import gruvexp.dungeons.Coord;
+import gruvexp.dungeons.Room;
 import gruvexp.dungeons.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -9,7 +10,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DungeonTabCompletor implements TabCompleter {
     @Override
@@ -45,7 +48,10 @@ public class DungeonTabCompletor implements TabCompleter {
                     }
                     return new ArrayList<>(0);
                 }
-                case "nextroom", "printusedspaces" -> {
+                case "nextroom" -> {
+                    return Arrays.stream(Room.values()).map(room -> room.name().toLowerCase()).collect(Collectors.toCollection(ArrayList::new));
+                }
+                case "printusedspaces" -> {
                     return new ArrayList<>(0);
                 }
                 default -> throw new IllegalArgumentException("invalid operation");

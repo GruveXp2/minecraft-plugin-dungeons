@@ -155,7 +155,7 @@ public class Dungeon {
         };
     }
 
-public void manualNextNode() {
+    public void manualNextNode() {
         if (manualSpawn) {
             Bukkit.broadcast(Component.text("========Next Node========", NamedTextColor.YELLOW));
             nextNode();

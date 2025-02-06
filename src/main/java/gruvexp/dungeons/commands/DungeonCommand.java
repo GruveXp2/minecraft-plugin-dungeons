@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.stream.Collectors;
 
 public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 4 3489 N 3
+
+    public static Room forcedRoom;
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) { // /dungeon spawn xyz dir
 
@@ -46,7 +49,14 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                     DungeonManager.fortress.manualSpawn = bool.equals("true");
                     sender.sendMessage("Changed manualspawn to " + DungeonManager.fortress.manualSpawn);
                 }
-                case "nextroom" -> DungeonManager.fortress.manualNextNode();
+                case "nextroom" -> {
+                    if (args.length == 2) {
+                        String selectedRoom = args[1];
+                        forcedRoom = Room.valueOf(selectedRoom.toUpperCase());
+                        SpawnNode.forceRoom = true;
+                    }
+                    DungeonManager.fortress.manualNextNode();
+                }
                 case "printusedspaces" -> {
                     DungeonManager.fortress.usedSpaces.stream().sorted((loc1, loc2) -> { //WHAT!!!! DEN PRINTER UT LIKE USED SPACES FLER GANGER?! SÅ DA ER DE IKKE LIKE ALIKAVEL, FINN UT HVORFOR => => => (kanskje posisjonene som kommer fra shulkersane har forskjellig yaw & pitch?)
                         int compareByX = Double.compare(loc1.getX(), loc2.getX());

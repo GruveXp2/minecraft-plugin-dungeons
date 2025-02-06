@@ -1,5 +1,6 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.commands.DungeonCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -16,6 +17,7 @@ public class SpawnNode {
     private final HashSet<Room> bannedRooms; // rommet som denne spawn noda kom fra
     private final TextDisplay dirMarker;
     private final TextDisplay typeMarker;
+    public static boolean forceRoom = false;
 
     public SpawnNode(Dungeon dungeon, Location loc, Direction dir, RoomType roomType, HashSet<Room> bannedRooms) {
         this.location = loc;
@@ -37,10 +39,20 @@ public class SpawnNode {
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
-        GrowRate growRate = dungeon.getRandomExpansionRate();
-        spawn(growRate, dungeon, bannedRooms);
+        if (forceRoom) {
+            place(dungeon, DungeonCommand.forcedRoom);
+        } else {
+            GrowRate growRate = dungeon.getRandomExpansionRate();
+            spawn(growRate, dungeon, bannedRooms);
+        }
         dirMarker.remove();
         typeMarker.remove();
+    }
+
+    public void place(Dungeon dungeon, Room room) { // forces that room to be placed
+        room.structure().place(dungeon, location, direction);
+        forceRoom = false;
+        Bukkit.broadcast(Component.text("Room was placed by force", NamedTextColor.LIGHT_PURPLE));
     }
 
     private void spawn(GrowRate growRate, Dungeon dungeon, HashSet<Room> bannedRooms) {
