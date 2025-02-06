@@ -187,6 +187,10 @@ public class DungeonStructure {
     }
 
     public boolean availableSpace(Dungeon dungeon, Location loc, Direction dir) {
+
+        // 2 DO!!! GJØR SÅNN AT MAN KAN STOPPE PÅ FORSKJELLIGE STEPS UTEN Å SPAWNE, FEKS VED Å TESTE AVAILABLE SPACE PÅ BRIDGES_X
+        // og da spawnes det feks, man kan selecte hvem som skal testes på og da kommer det opp tekst og man kan gå til neste osv
+
         // sjekker om det er plass til å spawne denne structuren eller om det er spaces som er opptatt av et annet rom i dungenen.
         // input lokasjon (absolutt) og retning: exitpkt i forrige rom.
         Location locOrigin = loc.clone();
@@ -197,7 +201,7 @@ public class DungeonStructure {
             Location locSpace = locOrigin.clone();
             locSpace.add(rotateLocation(e.getLocation(), dir));
             locSpace.setYaw(0);
-            locSpace.setPitch(0);
+            locSpace.setPitch(0); // abs pos til shulkerboxen
 
             if (dungeon.usedSpaces.contains(locSpace)) {
                 Bukkit.broadcast(Component.text("No space for this room, another room already generated there", NamedTextColor.GRAY));
@@ -210,8 +214,8 @@ public class DungeonStructure {
                     moveForward(connectionLoc, connectionDir, roomType.gridSize/2);
                     DungeonManager.spawnTextMarker(connectionLoc.clone().add(0, 0.1, 0), ChatColor.GRAY + "check", "check");
                     boolean hasConnection = false; // hvis det er en reservert plass, så forteller denne om det går ut en vei som connecter med den som reserverte
-                    for (Location exitLoc : exitLocations.keySet()) {
-                        Location exitLocAbs = rotateLocation(exitLoc.clone(), dir);
+                    for (Location exitVec : exitLocations.keySet()) {
+                        Location exitLocAbs = rotateLocation(exitVec.clone(), dir);
                         exitLocAbs.add(locOrigin);
                         if (exitLocAbs.equals(connectionLoc)) {
                             hasConnection = true;
