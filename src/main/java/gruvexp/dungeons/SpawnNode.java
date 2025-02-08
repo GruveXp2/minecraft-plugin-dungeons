@@ -36,6 +36,7 @@ public class SpawnNode {
         Location reservedLoc = loc.clone();
         DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2 + 1);
         dungeon.reserveSpace(reservedLoc, dir.rotate(RelativeDirection.BACKWARD));
+        dungeon.linkLocations.add(loc);
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
