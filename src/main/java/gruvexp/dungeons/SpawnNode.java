@@ -39,12 +39,8 @@ public class SpawnNode {
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
-        if (forceRoom) {
-            place(dungeon, DungeonCommand.forcedRoom);
-        } else {
-            GrowRate growRate = dungeon.getRandomExpansionRate();
-            spawn(growRate, dungeon, bannedRooms);
-        }
+        GrowRate growRate = dungeon.getRandomExpansionRate();
+        spawn(growRate, dungeon, bannedRooms);
         dirMarker.remove();
         typeMarker.remove();
     }
@@ -56,8 +52,19 @@ public class SpawnNode {
     }
 
     private void spawn(GrowRate growRate, Dungeon dungeon, HashSet<Room> bannedRooms) {
+        Location locPossibleConnection = location.clone();
+        DungeonStructure.moveForward(locPossibleConnection, direction, 1);
+        if (dungeon.linkLocations.contains(locPossibleConnection)) {
+            return; // hvis det er en annen spawnnode rett foran, altså at 2 stykker peker inn i hverandre
+            // da er de allerede kobla sammen og trengs ikke å generere noe hvis det allerede er et rom der
+        }
+
         StructurePool pool = dungeon.structurePools.get(roomType);
         Room randomRoom = pool.getRandomStructure(growRate, bannedRooms);
+        if (DungeonCommand.forcedRoom != null) {
+            randomRoom = DungeonCommand.forcedRoom;
+            Bukkit.broadcast(Component.text("overriding room to " + randomRoom.name(), NamedTextColor.LIGHT_PURPLE));
+        }
         if (randomRoom == null) {
             Bukkit.broadcastMessage(ChatColor.RED + "Failed to spawn a room here, no space for it");
             return;
@@ -73,6 +80,11 @@ public class SpawnNode {
             } else {
                 Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");
             }
+        }
+        if (DungeonCommand.forcedRoom != null) {
+            DungeonCommand.forcedRoom = null;
+            Bukkit.broadcastMessage(ChatColor.RED + "Failed to spawn that room, fix the code");
+            return;
         }
         bannedRooms.add(randomRoom);
         spawn(growRate, dungeon, bannedRooms);

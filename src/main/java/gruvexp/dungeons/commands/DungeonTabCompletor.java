@@ -21,7 +21,7 @@ public class DungeonTabCompletor implements TabCompleter {
         Player p = (Player) sender;
 
         if (args.length == 1) {
-            return List.of("spawn", "manualspawn", "nextroom", "printusedspaces");
+            return List.of("spawn", "info", "manualspawn", "nextroom", "printusedspaces");
         }
         String oper = args[0];
         try {
@@ -47,6 +47,9 @@ public class DungeonTabCompletor implements TabCompleter {
                         return List.of("true", "false");
                     }
                     return new ArrayList<>(0);
+                }
+                case "info" -> {
+                    return List.of("showreserved", "showdircheck", "strucon", "exitnodchk", "usedspace");
                 }
                 case "nextroom" -> {
                     return Arrays.stream(Room.values()).map(room -> room.name().toLowerCase()).collect(Collectors.toCollection(ArrayList::new));

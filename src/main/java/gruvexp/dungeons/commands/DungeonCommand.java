@@ -13,6 +13,11 @@ import java.util.stream.Collectors;
 public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 4 3489 N 3
 
     public static Room forcedRoom;
+    public static boolean showreserved = false;
+    public static boolean showdircheck = false;
+    public static boolean strucon = false;
+    public static boolean extnodchk = false;
+    public static boolean usedspace = false;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) { // /dungeon spawn xyz dir
@@ -48,6 +53,21 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                     String bool = args[1];
                     DungeonManager.fortress.manualSpawn = bool.equals("true");
                     sender.sendMessage("Changed manualspawn to " + DungeonManager.fortress.manualSpawn);
+                }
+                case "info" -> {
+                    if (args.length == 1) {
+                        throw new IllegalArgumentException("not enough args");
+                    }
+                    String infoType = args[1];
+                    switch (infoType) {
+                        case "showreserved" -> showreserved = !showreserved;
+                        case "showdircheck" -> showdircheck = !showdircheck;
+                        case "strucon" -> strucon = !strucon;
+                        case "exitnodchk" -> extnodchk = !extnodchk;
+                        case "usedspace" -> usedspace = !usedspace;
+                        default -> throw new IllegalArgumentException("wrong arg");
+                    }
+                    sender.sendMessage("Changed info to " + infoType);
                 }
                 case "nextroom" -> {
                     if (args.length == 2) {
