@@ -64,6 +64,7 @@ public class SpawnNode {
         Room randomRoom = pool.getRandomStructure(growRate, bannedRooms);
         if (DungeonCommand.forcedRoom != null) {
             randomRoom = DungeonCommand.forcedRoom;
+            DungeonCommand.forcedRoom = null;
             Bukkit.broadcast(Component.text("overriding room to " + randomRoom.name(), NamedTextColor.LIGHT_PURPLE));
         }
         if (randomRoom == null) {
@@ -83,7 +84,6 @@ public class SpawnNode {
             }
         }
         if (DungeonCommand.forcedRoom != null) {
-            DungeonCommand.forcedRoom = null;
             Bukkit.broadcastMessage(ChatColor.RED + "Failed to spawn that room, fix the code");
             return;
         }
