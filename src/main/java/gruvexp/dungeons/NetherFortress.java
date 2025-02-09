@@ -12,17 +12,23 @@ public class NetherFortress extends Dungeon {
     public NetherFortress() {
         super(Room.FORTRESS_LAVAROOM);
         StructurePool bridges = new StructurePool();
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_F, 4);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_F, 4);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_END, 1);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_F, 16);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_F, 16);
         bridges.addStructure(Room.FORTRESS_BRIDGE_R, 1);
         bridges.addStructure(Room.FORTRESS_BRIDGE_L, 1);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_X, 1);
+
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_X, 3);
         bridges.addStructure(Room.FORTRESS_BRIDGE_X, 1);
+
+        bridges.addStructure(Room.FORTRESS_BRIDGE_END, 3);
         bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE, 1);
 
         StructurePool corridors = new StructurePool();
-        corridors.addStructure(Room.END, 1);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_F, 5);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_R, 1);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_L, 1);
+
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_X, 3);
 
 
         structurePools.put(RoomType.FORTRESS_BRIDGE, bridges);
