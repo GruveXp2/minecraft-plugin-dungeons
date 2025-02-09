@@ -13,6 +13,7 @@ public enum Room {
     T_SPLIT_L(new DungeonStructure("dungeon", "t_split_l", RoomType.CATACOMB_WALKWAY), GrowRate.EXPANDING),
 
     // fortress
+    FORTRESS_LAVAROOM(new DungeonStructure("fortress", "origin/lava_room", RoomType.ORIGIN), GrowRate.EXPANDING),
     FORTRESS_BRIDGE_BOW_F(new DungeonStructure("fortress", "bridge/bow_f", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
     FORTRESS_BRIDGE_F(new DungeonStructure("fortress", "bridge/f", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
     FORTRESS_BRIDGE_END(new DungeonStructure("fortress", "bridge/end", RoomType.FORTRESS_BRIDGE), GrowRate.END),

@@ -16,6 +16,7 @@ public class Dungeon {
     public final HashSet<Location> usedSpaces = new HashSet<>();
     public final HashMap<Location, ReservedSpace> reservedSpaces = new HashMap<>();
     public final HashSet<Location> linkLocations = new HashSet<>();
+    public final Room roomOrigin;
     protected int roomCount = 0;
 
     protected int roomTickCount = 0;
@@ -23,13 +24,17 @@ public class Dungeon {
     public int visualizerPosY = 0;
     public boolean manualSpawn = false;
 
-    public void makeDungeon(Location location, Direction direction, RoomType roomType, int size) {
+    public Dungeon(Room roomOrigin) {
+        this.roomOrigin = roomOrigin;
+    }
+
+    public void makeDungeon(Location location, Direction direction, int size) {
         Bukkit.broadcastMessage("spawning dungeon...");
         usedSpaces.clear();
-        spawnNodeQue.add(new SpawnNode(this, location, direction, roomType, new HashSet<>()));
         maxRooms = size;
         roomCount = 0;
         visualizerPosY = location.getBlockY() + 4;
+        roomOrigin.structure().place(this, location, direction);
         nextNode();
     }
 

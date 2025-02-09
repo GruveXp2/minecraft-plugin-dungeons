@@ -10,6 +10,7 @@ public class NetherFortress extends Dungeon {
     public static final HashSet<SpawnFeature> ironArches = new HashSet<>(); // liste med steder som gitterbuer kan spawne
 
     public NetherFortress() {
+        super(Room.FORTRESS_LAVAROOM);
         StructurePool bridges = new StructurePool();
         bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_F, 4);
         bridges.addStructure(Room.FORTRESS_BRIDGE_F, 4);
@@ -20,5 +21,5 @@ public class NetherFortress extends Dungeon {
         bridges.addStructure(Room.FORTRESS_BRIDGE_X, 1);
         bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE, 1);
         structurePools.put(RoomType.FORTRESS_BRIDGE, bridges);
-    } // 2DO! GJØR AT USED SPACES VISES SOM TEXTDISPLAYS!! MED SHOWUSEDSPACES
+    }
 }
