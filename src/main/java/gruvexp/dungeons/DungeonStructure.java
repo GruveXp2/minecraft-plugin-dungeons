@@ -28,7 +28,7 @@ public class DungeonStructure {
     public final RoomType roomType;
     public final String name;
 
-    public DungeonStructure(String structureGroup, String structureName, Coord entry, RoomType roomType) {
+    public DungeonStructure(String structureGroup, String structureName, RoomType roomType) {
         this.roomType = roomType;
         this.name = structureName;
         structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, structureName));
@@ -36,7 +36,7 @@ public class DungeonStructure {
         if (structure == null) {
             throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + new NamespacedKey(structureGroup, structureName).namespace() + "\" fins ikke!");
         }
-        this.entry = entry;
+        Coord entry = null;
         for (Entity e : structure.getEntities()) {
             String[] name = ChatColor.stripColor(e.getName()).split(" ");
             String directionStr = name[0];
@@ -48,8 +48,16 @@ public class DungeonStructure {
                     RelativeDirection dir = RelativeDirection.fromString(directionStr);
                     exitLocations.put(eLoc, dir);
                 }
+                case "Entry" -> {
+                    Location vecEntry = e.getLocation();
+                    entry = new Coord(vecEntry.blockX(), vecEntry.blockY(), vecEntry.blockZ());
+                }
             }
         }
+        if (entry == null) { // hvis man har glemt å lage en entry
+            entry = new Coord(0, 0, 0);
+        }
+        this.entry = entry;
     }
 
     private static Direction rotateNode(RelativeDirection relDir, StructureRotation structureRotation) {
