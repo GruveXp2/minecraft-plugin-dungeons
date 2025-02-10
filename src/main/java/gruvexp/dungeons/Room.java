@@ -22,12 +22,14 @@ public enum Room {
     FORTRESS_BRIDGE_BLAZE(new DungeonStructure("fortress", "bridge/blaze", RoomType.FORTRESS_BRIDGE), GrowRate.END),
     FORTRESS_BRIDGE_L(new DungeonStructure("fortress", "bridge/l", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
     FORTRESS_BRIDGE_R(new DungeonStructure("fortress", "bridge/r", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
+
     FORTRESS_CORRIDOR_F(new DungeonStructure("fortress", "corridor/f", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),
     FORTRESS_CORRIDOR_R(new DungeonStructure("fortress", "corridor/r", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),
     FORTRESS_CORRIDOR_L(new DungeonStructure("fortress", "corridor/l", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),
     FORTRESS_CORRIDOR_STAIRS(new DungeonStructure("fortress", "corridor/stairs", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),
     FORTRESS_CORRIDOR_END_LAVA(new DungeonStructure("fortress", "corridor/end_lava", RoomType.FORTRESS_CORRIDOR), GrowRate.END),
     FORTRESS_CORRIDOR_END_BROKEN(new DungeonStructure("fortress", "corridor/end_broken", RoomType.FORTRESS_CORRIDOR), GrowRate.END),
+    FORTRESS_CORRIDOR_T(new DungeonStructure("fortress", "corridor/t", RoomType.FORTRESS_CORRIDOR), GrowRate.EXPANDING),
     FORTRESS_CORRIDOR_X(new DungeonStructure("fortress", "corridor/x", RoomType.FORTRESS_CORRIDOR), GrowRate.EXPANDING);
 
     private final DungeonStructure structure;

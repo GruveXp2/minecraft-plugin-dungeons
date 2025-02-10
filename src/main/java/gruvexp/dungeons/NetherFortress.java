@@ -31,7 +31,8 @@ public class NetherFortress extends Dungeon {
         corridors.addStructure(Room.FORTRESS_CORRIDOR_L, 1);
         corridors.addStructure(Room.FORTRESS_CORRIDOR_STAIRS, 1);
 
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_X, 3);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_X, 1);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_T, 1);
 
         corridors.addStructure(Room.FORTRESS_CORRIDOR_END_BROKEN, 10);
         corridors.addStructure(Room.FORTRESS_CORRIDOR_END_LAVA, 1);
