@@ -73,9 +73,9 @@ public class SpawnNode {
             return;
         }
         DungeonStructure dungeonStructure = randomRoom.structure();
-        Bukkit.broadcast(Component.text("Trying room " + dungeonStructure.name, NamedTextColor.GRAY));
+        //Bukkit.broadcast(Component.text("Trying room " + dungeonStructure.name, NamedTextColor.GRAY));
         if (dungeonStructure.availableSpace(dungeon, location, direction)) {
-            Bukkit.broadcast(Component.text("space is available", NamedTextColor.GRAY));
+            //Bukkit.broadcast(Component.text("space is available", NamedTextColor.GRAY));
             if (!dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
                 Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), dungeonStructure.name));
                 dungeon.activeNodes.put(roomType, dungeon.activeNodes.getOrDefault(roomType, 0) - 1);
@@ -83,7 +83,7 @@ public class SpawnNode {
                 dungeonStructure.place(dungeon, location, direction);
                 return;
             } else {
-                Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");
+                //Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");
             }
         }
         if (DungeonCommand.forcedRoom != null) {

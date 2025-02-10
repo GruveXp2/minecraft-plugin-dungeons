@@ -1,5 +1,6 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.commands.DungeonCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -16,6 +17,7 @@ public class ReservedSpace {
 
     public void connect(Direction direction) {
         connections.add(direction);
+        if (!DungeonCommand.showreserved) return;
         switch (direction) {
             case N -> DungeonManager.spawnTextMarker(loc.clone().add(0, 0.25, 0), ChatColor.BLUE + "Reserved N", "reserved");
             case S -> DungeonManager.spawnTextMarker(loc.clone().add(0, 0.5, 0), ChatColor.RED + "Reserved S", "reserved");
