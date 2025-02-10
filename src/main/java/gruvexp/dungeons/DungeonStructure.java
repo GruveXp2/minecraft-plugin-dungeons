@@ -342,6 +342,7 @@ public class DungeonStructure {
                     skeleton.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999, 1));
                     skeleton.setPersistent(true); // sånn at han ikke despawner
                 }
+                case "Entry" -> {}
                 default -> {
                     Location eLoc = e.getLocation();
                     rotateLocation(eLoc, dir);
