@@ -37,6 +37,7 @@ public class SpawnNode {
         DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2 + 1);
         dungeon.reserveSpace(reservedLoc, dir.rotate(RelativeDirection.BACKWARD));
         dungeon.linkLocations.add(loc);
+        dungeon.activeNodes.put(roomType, dungeon.activeNodes.getOrDefault(roomType, 0) + 1);
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
@@ -77,6 +78,8 @@ public class SpawnNode {
             Bukkit.broadcast(Component.text("space is available", NamedTextColor.GRAY));
             if (!dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
                 Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), dungeonStructure.name));
+                dungeon.activeNodes.put(roomType, dungeon.activeNodes.getOrDefault(roomType, 0) - 1);
+                dungeon.roomCount  .put(roomType, dungeon.roomCount  .getOrDefault(roomType, 0) + 1);
                 dungeonStructure.place(dungeon, location, direction);
                 return;
             } else {

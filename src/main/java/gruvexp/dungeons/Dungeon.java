@@ -10,14 +10,15 @@ import java.util.*;
 
 import static gruvexp.dungeons.DungeonManager.RANDOM;
 
-public class Dungeon {
+public abstract class Dungeon {
     protected final HashMap<RoomType, StructurePool> structurePools = new HashMap<>();
+    protected final HashMap<RoomType, Integer> roomCount = new HashMap<>();
+    protected final HashMap<RoomType, Integer> activeNodes = new HashMap<>();
     protected final Queue<SpawnNode> spawnNodeQue = new LinkedList<>(); // liste med SpawnNodes (en spawnnode er en posisjon og retning som det kan spånes et rom fra)
     public final HashSet<Location> usedSpaces = new HashSet<>();
     public final HashMap<Location, ReservedSpace> reservedSpaces = new HashMap<>();
     public final HashSet<Location> linkLocations = new HashSet<>();
     public final Room roomOrigin;
-    protected int roomCount = 0;
 
     protected int roomTickCount = 0;
     protected int maxRooms = 0;
@@ -32,7 +33,6 @@ public class Dungeon {
         Bukkit.broadcastMessage("spawning dungeon...");
         usedSpaces.clear();
         maxRooms = size;
-        roomCount = 0;
         visualizerPosY = location.getBlockY() + 4;
         roomOrigin.structure().place(this, location, direction);
         nextNode();
@@ -44,23 +44,11 @@ public class Dungeon {
     }
 
     private void nextNode() {
-        if (roomCount == 50) {
-            Bukkit.broadcastMessage(String.format("%sReached 50 rooms, active nodes: %s", ChatColor.GREEN, spawnNodeQue.size()));
-        } else if (roomCount == 200) {
-            Bukkit.broadcastMessage(String.format("%sReached 200 rooms, active nodes: %s", ChatColor.GREEN, spawnNodeQue.size()));
-        }
-        if (roomCount > maxRooms) {
-            Bukkit.broadcastMessage(ChatColor.YELLOW + "max rooms generated");
-            spawnNodeQue.clear();
-            //postGeneration();
-            return;
-        }
         if (spawnNodeQue.isEmpty()) {
             Bukkit.broadcastMessage(ChatColor.YELLOW + "no more rooms to generate");
             //postGeneration();
             return;
         }
-        roomCount ++;
         spawnNodeQue.poll().spawn(this);
         if (RANDOM.nextInt(5) == 0) {
             visualizerPosY++;
@@ -128,39 +116,6 @@ public class Dungeon {
         // 50 - 200 rom: her skjer det i gjennomsnitt ingen ekspansjon
         //      200+rom: her genereres det lange ganger ut fra kjernen, og det er dobbelt så stor sjangs for at en gang slutter enn at den deler seg.
         //               dette er for å gjøre det lettere å finne dungeonen, ved at man kan finne en lang sidegang som fører inn til midten
-
-        int expansionRate;
-        if (roomCount < 12) {
-            expansionRate = RANDOM.nextInt(2) + 1; // 50% 1, 50% 2.
-        } else if (roomCount < 32) {
-            expansionRate = RANDOM.nextInt(4);
-            if (expansionRate > 1) {
-                expansionRate -= 1; // 25% 0, 50% 1, 25% 2.
-            }
-            if (spawnNodeQue.size() < 15 && expansionRate == 0) {
-                return GrowRate.EXPANDING; // hvis det er for lite noder så ekspanderer vi
-            } else if (spawnNodeQue.size() > 25 && expansionRate == 2) {
-                return GrowRate.END; // hvis det er for mange noder så reduserer vi
-            }
-        } else if (roomCount < 64) {
-            expansionRate = RANDOM.nextInt(20); // 40
-            if (expansionRate < 2) {
-                return GrowRate.END; // 4% 0, 94% 1, 2% 2
-            } else if (expansionRate == 19) { // 39
-                return GrowRate.EXPANDING;
-            } else {
-                return GrowRate.STATIC;
-            }
-        } else {
-            return GrowRate.END;
-        }
-        return switch (expansionRate) {
-            case 0 -> GrowRate.END;
-            case 1 -> GrowRate.STATIC;
-            case 2 -> GrowRate.EXPANDING;
-            default -> throw new IllegalStateException("Unexpected value: " + expansionRate);
-        };
-    }
 
     public void manualNextNode() {
         if (manualSpawn) {
