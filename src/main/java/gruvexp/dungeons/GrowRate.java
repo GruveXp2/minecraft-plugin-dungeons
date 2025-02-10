@@ -20,7 +20,7 @@ public enum GrowRate {
         int total = endChance + staticChance + expandingChance;
         int roll = random.nextInt(total);
         if (roll < endChance) return END;
-        if (roll < staticChance) return STATIC;
+        if (roll < endChance + staticChance) return STATIC;
         return EXPANDING;
     }
 }
