@@ -41,7 +41,7 @@ public class SpawnNode {
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
-        GrowRate growRate = dungeon.getRandomExpansionRate();
+        GrowRate growRate = dungeon.getRandomExpansionRate(roomType);
         spawn(growRate, dungeon, bannedRooms);
         dirMarker.remove();
         typeMarker.remove();

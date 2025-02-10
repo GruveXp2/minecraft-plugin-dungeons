@@ -110,7 +110,7 @@ public abstract class Dungeon {
         // ha liste med hindringer, velg ut random og spawn (rarity på de?)
     }*/
 
-    public GrowRate getRandomExpansionRate() {
+    public abstract GrowRate getRandomExpansionRate(RoomType roomType);
         // Sånn funker det:
         //  0 -  50 rom: (i begynnelsen) her ekspanderes det veldig mye
         // 50 - 200 rom: her skjer det i gjennomsnitt ingen ekspansjon
