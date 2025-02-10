@@ -50,16 +50,16 @@ public class StructurePool {
         // men rom fra growRate har 10x sjangs for å bli valgt
         // bannedRooms er rom som ikke kan bli brukt enten fordi de ikke passer med det forrige rommet eller hvis de ikke har plass/lov til å spawne
         int totalWeight = structureWeights.values().stream().mapToInt(Integer::intValue).sum();
-        totalWeight += structureWeights.get(growRate) * 9; // den ene har 10x sjangs
+        totalWeight += structureWeights.get(growRate) * 999; // den ene har 1000x sjangs
         for (Room bannedRoom : bannedRooms) {
-            totalWeight -= structures.get(bannedRoom) * (bannedRoom.growRate == growRate ? 10 : 1);
+            totalWeight -= structures.get(bannedRoom) * (bannedRoom.growRate == growRate ? 1000 : 1);
         }
         int roll = new Random().nextInt(totalWeight);
         int currentWeight = 0;
         for (Map.Entry<Room, Integer> entry : structures.entrySet()) {
             Room room = entry.getKey();
             if (bannedRooms.contains(room)) continue;
-            currentWeight += entry.getValue() * (room.growRate == growRate ? 10 : 1);;
+            currentWeight += entry.getValue() * (room.growRate == growRate ? 1000 : 1);;
             if (roll < currentWeight) { // hvis man setter alle rommene og weightsene etterhverandre, så velges den strukturen som er roll avstand fra start
                 return room;
             }
