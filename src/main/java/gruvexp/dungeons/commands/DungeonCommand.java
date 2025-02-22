@@ -60,14 +60,28 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                     }
                     String infoType = args[1];
                     switch (infoType) {
-                        case "showreserved" -> showreserved = !showreserved;
-                        case "showdircheck" -> showdircheck = !showdircheck;
-                        case "strucon" -> strucon = !strucon;
-                        case "exitnodchk" -> extnodchk = !extnodchk;
-                        case "usedspace" -> usedspace = !usedspace;
+                        case "showreserved" -> {
+                            showreserved = !showreserved;
+                            sender.sendMessage("Changed showreserved to " + showreserved);
+                        }
+                        case "showdircheck" -> {
+                            showdircheck = !showdircheck;
+                            sender.sendMessage("Changed showdircheck to " + showdircheck);
+                        }
+                        case "strucon" -> {
+                            strucon = !strucon;
+                            sender.sendMessage("Changed strucon to " + strucon);
+                        }
+                        case "exitnodchk" -> {
+                            extnodchk = !extnodchk;
+                            sender.sendMessage("Changed extnodchk to " + extnodchk);
+                        }
+                        case "usedspace" -> {
+                            usedspace = !usedspace;
+                            sender.sendMessage("Changed usedspace to " + usedspace);
+                        }
                         default -> throw new IllegalArgumentException("wrong arg");
                     }
-                    sender.sendMessage("Changed info to " + infoType);
                 }
                 case "nextroom" -> {
                     if (args.length == 2) {

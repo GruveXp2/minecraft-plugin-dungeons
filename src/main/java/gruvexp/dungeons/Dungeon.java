@@ -59,9 +59,11 @@ public abstract class Dungeon {
             else {
                 Bukkit.getServer().getScheduler().runTaskLater(Main.getPlugin(), () -> {
                     roomTickCount = spawnNodeQue.size();
-                    Bukkit.broadcastMessage("Spawning " + roomTickCount + " rooms...");
+                    Bukkit.broadcast(Component.text("Spawning " + roomTickCount + " rooms..."));
+                    Bukkit.broadcast(Component.text("- Bridges: " + roomCount.get(RoomType.FORTRESS_BRIDGE) + "T, " + activeNodes.get(RoomType.FORTRESS_BRIDGE) + "A, "));
+                    Bukkit.broadcast(Component.text("- Corridors: " + roomCount.get(RoomType.FORTRESS_CORRIDOR) + "T, " + activeNodes.get(RoomType.FORTRESS_CORRIDOR) + "A, "));
                     nextNode();
-                }, 2L);
+                }, 10L);
             }
 
         }

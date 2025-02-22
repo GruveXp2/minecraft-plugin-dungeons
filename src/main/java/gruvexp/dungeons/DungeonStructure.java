@@ -165,8 +165,8 @@ public class DungeonStructure {
         //DungeonManager.spawnTextMarker(locOrigin, ChatColor.LIGHT_PURPLE + "start1", "conflict");
         moveForward(locOrigin, dir, 1);
         moveToOrigin(locOrigin, dir);
-        for (Map.Entry<Location, RelativeDirection> entry : exitLocations.entrySet()) { // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
-
+        for (Map.Entry<Location, RelativeDirection> entry : exitLocations.entrySet()) {
+            // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
             Location rotatedExitSpace = rotateLocation(entry.getKey().clone(), dir);
             rotatedExitSpace.add(locOrigin); // gjør om til absolutt lokasjon
             rotatedExitSpace.setX(rotatedExitSpace.getBlockX());
@@ -214,7 +214,7 @@ public class DungeonStructure {
         Location locOrigin = loc.clone();
         moveForward(locOrigin, dir, 1);
         moveToOrigin(locOrigin, dir); // origin point for structen i verdenen
-        for (Entity e : structure.getEntities()) {
+        for (Entity e : structure.getEntities()) { // looper gjennom alle space shulkers
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
             Location locSpace = locOrigin.clone();
             locSpace.add(rotateLocation(e.getLocation(), dir));
@@ -271,7 +271,7 @@ public class DungeonStructure {
         //DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "start", "conflict");
         moveForward(loc, dir, 1);
         moveToOrigin(loc, dir);
-        DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "origin", "conflict");
+        //DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "origin", "conflict");
         StructureRotation structureRotation = dir.toStructureRotation();
         //Bukkit.broadcastMessage(String.format("Origin moved to: %s, %s, %s (%s)", location.getX(), location.getY(), location.getZ(), dir));
         structure.place(loc, false, structureRotation, Mirror.NONE, 0, 1.0f, DungeonManager.RANDOM);
