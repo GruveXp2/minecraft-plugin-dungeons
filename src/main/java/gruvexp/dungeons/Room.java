@@ -37,10 +37,6 @@ public enum Room {
     private final DungeonStructure structure;
     public final GrowRate growRate;
 
-    public RoomType roomType() {
-        return structure.roomType;
-    };
-
     Room(DungeonStructure structure, GrowRate growRate) {
         this.structure = structure;
         this.growRate = growRate;
