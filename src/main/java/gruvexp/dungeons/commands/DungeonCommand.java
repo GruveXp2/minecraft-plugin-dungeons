@@ -42,6 +42,7 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                     }
                     // make the dungeon
                     if (dungeonType.equals("fortress")) {
+                        DungeonManager.fortress = new NetherFortress();
                         DungeonManager.fortress.makeDungeon(location, Direction.fromString(dir), size);
                     } else {
                         sender.sendMessage(dungeonType + " isnt added at the moment");

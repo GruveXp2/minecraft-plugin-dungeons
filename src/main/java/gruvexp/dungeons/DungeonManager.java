@@ -13,7 +13,7 @@ public final class DungeonManager {
     public static final Random RANDOM = new Random();
     public static final HashMap<Location, SpawnFeature> walls = new HashMap<>(); // liste med steder der vegger kan spawne
     public static final HashSet<SpawnFeature> ironArches = new HashSet<>(); // liste med steder som gitterbuer kan spawne
-    public static final NetherFortress fortress = new NetherFortress();
+    public static NetherFortress fortress = new NetherFortress();
 
 
     public static void init() {
