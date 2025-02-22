@@ -213,6 +213,10 @@ public class DungeonStructure {
         // input lokasjon (absolutt) og retning: exitpkt i forrige rom.
         Location locOrigin = loc.clone();
         moveForward(locOrigin, dir, 1);
+
+        Location locSpaceEntry = locOrigin.clone();
+        moveForward(locSpaceEntry, dir, roomType.gridSize / 2); // vil være plassert der space blokken er foran entrypointet
+
         moveToOrigin(locOrigin, dir); // origin point for structen i verdenen
         for (Entity e : structure.getEntities()) { // looper gjennom alle space shulkers
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
@@ -232,7 +236,7 @@ public class DungeonStructure {
                     DungeonManager.spawnTextMarker(locSpace, "Reserved space", "showreserved"); // reserved space found while trying to spawn
                 }
                 for (Direction connectionDir : space.getConnections()) {
-                    if (connectionDir.rotate(RelativeDirection.BACKWARD) == dir) continue; // strukturens entrypoint håndterer allerede den retninga, ikke exit pointsene
+                    if (connectionDir.rotate(RelativeDirection.BACKWARD) == dir && locSpace.equals(locSpaceEntry)) continue; // strukturens entrypoint håndterer allerede den retninga, ikke exit pointsene
 
                     Location connectionLoc = locSpace.clone(); // hvor det skjekkes om er et exit point
                     moveForward(connectionLoc, connectionDir, roomType.gridSize/2);
