@@ -36,4 +36,38 @@ public final class DungeonManager {
         textDisplay.addScoreboardTag(tag);
         return textDisplay;
     }
+
+    public static void moveForward(Location loc, Direction dir, int blocks) {
+        switch (dir) {
+            case S, NS -> loc.add(0, 0, blocks);
+            case W -> loc.add(-blocks, 0, 0);
+            case N -> loc.add(0, 0, -blocks);
+            case E, EW -> loc.add(blocks, 0, 0);
+            default -> throw new IllegalArgumentException("Illegal direction: " + dir + " (Dungeonstructure:118)");
+        }
+    }
+
+    public static Location rotateLocation(Location loc, Direction dir) {
+        switch (dir) {
+            case S -> {
+                loc.setX(loc.getBlockX());
+                loc.setZ(loc.getBlockZ());
+            }
+            case N -> {
+                loc.setX(-loc.getBlockX());
+                loc.setZ(-loc.getBlockZ());
+            }
+            case E -> {
+                double oldX = loc.getBlockX();
+                loc.setX(loc.getBlockZ());
+                loc.setZ(-oldX);
+            }
+            case W -> {
+                double oldX = loc.getBlockX();
+                loc.setX(-loc.getBlockZ());
+                loc.setZ(oldX);
+            }
+        }
+        return loc;
+    }
 }

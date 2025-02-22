@@ -12,7 +12,6 @@ import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -63,90 +62,6 @@ public class DungeonStructure {
         this.entry = entry;
     }
 
-    private static Direction rotateNode(RelativeDirection relDir, StructureRotation structureRotation) {
-        Direction dir = relDir.toAbsoluteDirection();
-        switch (structureRotation) {
-            case NONE -> {
-                return dir;
-            }
-            case CLOCKWISE_90 -> {
-                return switch (dir) {
-                    case N -> Direction.E;
-                    case E -> Direction.S;
-                    case S -> Direction.W;
-                    case W -> Direction.N;
-                    case NS -> Direction.EW;
-                    case EW -> Direction.NS;
-                    default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:58)");
-                };
-            }
-            case CLOCKWISE_180 -> {
-                return switch (dir) {
-                    case N -> Direction.S;
-                    case E -> Direction.W;
-                    case S -> Direction.N;
-                    case W -> Direction.E;
-                    case NS, EW -> dir;
-                    default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:68)");
-                };
-            }
-            case COUNTERCLOCKWISE_90 -> {
-                return switch (dir) {
-                    case N -> Direction.W;
-                    case E -> Direction.N;
-                    case S -> Direction.E;
-                    case W -> Direction.S;
-                    case NS -> Direction.EW;
-                    case EW -> Direction.NS;
-                    default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:79)");
-                };
-            }
-            default -> throw new IllegalArgumentException("ERROR DungeonStructure:83");
-        }
-    }
-
-    private static Location rotateLocation(Location loc, Direction dir) {
-        switch (dir) {
-            case S -> {
-                loc.setX(loc.getBlockX());
-                loc.setZ(loc.getBlockZ());
-            }
-            case N -> {
-                loc.setX(-loc.getBlockX());
-                loc.setZ(-loc.getBlockZ());
-            }
-            case E -> {
-                double oldX = loc.getBlockX();
-                loc.setX(loc.getBlockZ());
-                loc.setZ(-oldX);
-            }
-            case W -> {
-                double oldX = loc.getBlockX();
-                loc.setX(-loc.getBlockZ());
-                loc.setZ(oldX);
-            }
-        }
-        return loc;
-    }
-
-    public static void moveForward(Location loc, Direction dir, int blocks) {
-        switch (dir) {
-            case S, NS -> loc.add(0, 0, blocks);
-            case W -> loc.add(-blocks, 0, 0);
-            case N -> loc.add(0, 0, -blocks);
-            case E, EW -> loc.add(blocks, 0, 0);
-            default -> throw new IllegalArgumentException("Illegal direction: " + dir + " (Dungeonstructure:118)");
-        }
-    }
-
-    public static void spawnTextMarker(Location loc, String name, String tag) {
-        Location spawnLoc = new Location(loc.getWorld(), loc.getX() + 0.5, loc.getY(), loc.getZ() + 0.5);
-        TextDisplay textDisplay = Main.WORLD.spawn(spawnLoc, TextDisplay.class);
-        textDisplay.setText(name);
-        textDisplay.setBillboard(TextDisplay.Billboard.VERTICAL);
-        textDisplay.addScoreboardTag(tag);
-    }
-
     private void moveToOrigin(Location loc, Direction dir) {
         // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkurat passer med utanga til den forrige strukturen
         // så den flyttes til ett av hjørnene av strukturen som er det hjørnet med lavest xyz verdi i library verdenen
@@ -166,11 +81,11 @@ public class DungeonStructure {
         //Bukkit.broadcast(Component.text("---Checking exits---"));
         Location locOrigin = loc.clone();
         //DungeonManager.spawnTextMarker(locOrigin, ChatColor.LIGHT_PURPLE + "start1", "conflict");
-        moveForward(locOrigin, dir, 1);
+        DungeonManager.moveForward(locOrigin, dir, 1);
         moveToOrigin(locOrigin, dir);
         for (Map.Entry<Location, RelativeDirection> entry : exitLocations.entrySet()) {
             // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
-            Location rotatedExitSpace = rotateLocation(entry.getKey().clone(), dir);
+            Location rotatedExitSpace = DungeonManager.rotateLocation(entry.getKey().clone(), dir);
             rotatedExitSpace.add(locOrigin); // gjør om til absolutt lokasjon
             rotatedExitSpace.setX(rotatedExitSpace.getBlockX());
             rotatedExitSpace.setZ(rotatedExitSpace.getBlockZ());
@@ -179,7 +94,7 @@ public class DungeonStructure {
 
             RelativeDirection relExitDir = entry.getValue();
             Direction exitDir = dir.rotate(relExitDir);
-            moveForward(rotatedExitSpace, exitDir, 1);
+            DungeonManager.moveForward(rotatedExitSpace, exitDir, 1);
             //Bukkit.broadcast(Component.text(" - Exitloc at: " + Utils.printLocation(rotatedExitSpace), NamedTextColor.GRAY));
             if (DungeonCommand.extnodchk) {
                 DungeonManager.spawnTextMarker(rotatedExitSpace, ChatColor.LIGHT_PURPLE + "extnodchk", "conflict");
@@ -190,7 +105,7 @@ public class DungeonStructure {
                 return false;
             } else {
                 //Bukkit.broadcast(Component.text(" - - Not connected, checking for space", NamedTextColor.GRAY));
-                moveForward(rotatedExitSpace, dir.rotate(relExitDir), roomType.gridSize / 2);
+                DungeonManager.moveForward(rotatedExitSpace, dir.rotate(relExitDir), roomType.gridSize / 2);
                 if (dungeon.usedSpaces.contains(rotatedExitSpace)) {
                     //Bukkit.broadcast(Component.text(" - - Used space", NamedTextColor.RED));
                     if (DungeonCommand.usedspace) {
@@ -215,16 +130,16 @@ public class DungeonStructure {
         // sjekker om det er plass til å spawne denne structuren eller om det er spaces som er opptatt av et annet rom i dungenen.
         // input lokasjon (absolutt) og retning: exitpkt i forrige rom.
         Location locOrigin = loc.clone();
-        moveForward(locOrigin, dir, 1);
+        DungeonManager.moveForward(locOrigin, dir, 1);
 
         Location locSpaceEntry = locOrigin.clone();
-        moveForward(locSpaceEntry, dir, roomType.gridSize / 2); // vil være plassert der space blokken er foran entrypointet
+        DungeonManager.moveForward(locSpaceEntry, dir, roomType.gridSize / 2); // vil være plassert der space blokken er foran entrypointet
 
         moveToOrigin(locOrigin, dir); // origin point for structen i verdenen
         for (Entity e : structure.getEntities()) { // looper gjennom alle space shulkers
             if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
             Location locSpace = locOrigin.clone();
-            locSpace.add(rotateLocation(e.getLocation(), dir));
+            locSpace.add(DungeonManager.rotateLocation(e.getLocation(), dir));
             locSpace.setYaw(0);
             locSpace.setPitch(0); // abs pos til shulkerboxen
 
@@ -242,7 +157,7 @@ public class DungeonStructure {
                     if (connectionDir.rotate(RelativeDirection.BACKWARD) == dir && locSpace.equals(locSpaceEntry)) continue; // strukturens entrypoint håndterer allerede den retninga, ikke exit pointsene
 
                     Location connectionLoc = locSpace.clone(); // hvor det skjekkes om er et exit point
-                    moveForward(connectionLoc, connectionDir, roomType.gridSize/2);
+                    DungeonManager.moveForward(connectionLoc, connectionDir, roomType.gridSize/2);
                     if (DungeonCommand.showdircheck) {
                         Bukkit.broadcast(Component.text(" - Reserved direction: " + connectionDir, NamedTextColor.GRAY));
                         Bukkit.broadcast(Component.text(" \\ Reserved connection: " + Utils.printLocation(connectionLoc), NamedTextColor.GRAY));
@@ -250,7 +165,7 @@ public class DungeonStructure {
                     }
                     boolean hasConnection = false; // hvis det er en reservert plass, så forteller denne om det går ut en vei som connecter med den som reserverte
                     for (Location exitVec : exitLocations.keySet()) {
-                        Location exitLoc = rotateLocation(exitVec.clone(), dir);
+                        Location exitLoc = DungeonManager.rotateLocation(exitVec.clone(), dir);
                         exitLoc.add(locOrigin);
                         //Bukkit.broadcast(Component.text(" - - Struc connection: " + Utils.printLocation(exitLoc), NamedTextColor.GRAY));
                         if (exitLoc.equals(connectionLoc)) {
@@ -276,7 +191,7 @@ public class DungeonStructure {
     public void place(Dungeon dungeon, Location loc, Direction dir) {
         //Bukkit.broadcastMessage(String.format("Initial origin: %s, %s, %s", location.getX(), location.getY(), location.getZ()));
         //DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "start", "conflict");
-        moveForward(loc, dir, 1);
+        DungeonManager.moveForward(loc, dir, 1);
         moveToOrigin(loc, dir);
         //DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "origin", "conflict");
         StructureRotation structureRotation = dir.toStructureRotation();
@@ -293,7 +208,7 @@ public class DungeonStructure {
             switch (type) {
                 case "Forward", "Right", "Left", "Backward" -> {
                     Location eLoc = e.getLocation();
-                    rotateLocation(eLoc, dir);
+                    DungeonManager.rotateLocation(eLoc, dir);
                     eLoc.add(loc); // relativ -> absolutt lokasjon
                     //spawnTextMarker(eLoc, e.getName());
                     RelativeDirection relDir = RelativeDirection.fromString(type);
@@ -310,7 +225,7 @@ public class DungeonStructure {
                 }
                 case "Space" -> {
                     Location eLoc = e.getLocation();
-                    rotateLocation(eLoc, dir);
+                    DungeonManager.rotateLocation(eLoc, dir);
                     eLoc.add(loc);
                     eLoc.setYaw(0);
                     eLoc.setPitch(0);
@@ -320,24 +235,24 @@ public class DungeonStructure {
                 case "Wall FB", "Wall RL" -> {
                     String wallDirStr = type.substring(type.length() - 2);
                     RelativeDirection wallRelDir = RelativeDirection.fromString(wallDirStr);
-                    Direction wallDir = rotateNode(wallRelDir, structureRotation); // inkluderer absolutt rotasjon
+                    Direction wallDir = dir.rotate(wallRelDir); // inkluderer absolutt rotasjon
                     Location eLoc = e.getLocation();
-                    rotateLocation(eLoc, dir);
+                    DungeonManager.rotateLocation(eLoc, dir);
                     eLoc.add(loc);
                     DungeonManager.walls.put(eLoc, new SpawnFeature(wallDir, eLoc, Feature.WALL));
                 }
                 case "Iron Arch FB", "Iron Arch RL" -> {
                     String archDirStr = type.substring(type.length() - 2);
                     RelativeDirection archRelDir = RelativeDirection.fromString(archDirStr);
-                    Direction archDir = rotateNode(archRelDir, structureRotation);
+                    Direction archDir = dir.rotate(archRelDir);
                     Location eLoc = e.getLocation();
-                    rotateLocation(eLoc, dir);
+                    DungeonManager.rotateLocation(eLoc, dir);
                     eLoc.add(loc);
                     DungeonManager.ironArches.add(new SpawnFeature(archDir, eLoc, Feature.IRON_ARCH));
                 }
                 case "Skeleton" -> {
                     Location eLoc = e.getLocation();
-                    rotateLocation(eLoc, dir);
+                    DungeonManager.rotateLocation(eLoc, dir);
                     eLoc.add(loc);
                     eLoc.add(0.5, 0, 0.5);
                     Skeleton skeleton = (Skeleton) Main.WORLD.spawnEntity(eLoc, EntityType.SKELETON);
@@ -352,10 +267,10 @@ public class DungeonStructure {
                 case "Entry" -> {}
                 default -> {
                     Location eLoc = e.getLocation();
-                    rotateLocation(eLoc, dir);
+                    DungeonManager.rotateLocation(eLoc, dir);
                     eLoc.add(loc);
                     Bukkit.broadcast(Component.text(type, NamedTextColor.GRAY));
-                    spawnTextMarker(eLoc, ChatColor.RED + e.getName(), "unknown_entity");}
+                    DungeonManager.spawnTextMarker(eLoc, ChatColor.RED + e.getName(), "unknown_entity");}
             }
         }
     }

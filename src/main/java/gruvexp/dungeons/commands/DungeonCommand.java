@@ -103,7 +103,7 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                         }
                     }).collect(Collectors.toList()).forEach(loc -> {
                         sender.sendMessage(ChatColor.RED + Utils.printLocation(loc));
-                        DungeonStructure.spawnTextMarker(loc, ChatColor.YELLOW + Utils.printLocation(loc), "used_space");
+                        DungeonManager.spawnTextMarker(loc, ChatColor.YELLOW + Utils.printLocation(loc), "used_space");
                     });
                     sender.sendMessage("Tag: used_space");
                 }

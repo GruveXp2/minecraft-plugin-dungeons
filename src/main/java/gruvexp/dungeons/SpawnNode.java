@@ -36,7 +36,7 @@ public class SpawnNode {
         this.dirMarker = DungeonManager.spawnTextMarker(loc.clone().add(0, 0.5, 0), name, "dungeon_spawn_node");
         this.typeMarker = DungeonManager.spawnTextMarker(loc.clone().add(0, 0.25, 0), ChatColor.GRAY + roomType.name(), "dungeon_spawn_node");
         Location reservedLoc = loc.clone();
-        DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2 + 1);
+        DungeonManager.moveForward(reservedLoc, dir, roomType.gridSize / 2 + 1);
         dungeon.reserveSpace(reservedLoc, dir.rotate(RelativeDirection.BACKWARD));
         dungeon.linkLocations.add(loc);
         changeActiveNodesCount(dungeon, true);
@@ -57,7 +57,7 @@ public class SpawnNode {
 
     private void spawn(GrowRate growRate, Dungeon dungeon, HashSet<Room> bannedRooms) {
         Location locPossibleConnection = location.clone();
-        DungeonStructure.moveForward(locPossibleConnection, direction, 1);
+        DungeonManager.moveForward(locPossibleConnection, direction, 1);
         if (dungeon.linkLocations.contains(locPossibleConnection)) {
             changeActiveNodesCount(dungeon, false);
             Bukkit.broadcast(Component.text("- Link", NamedTextColor.YELLOW));
