@@ -37,7 +37,7 @@ public class SpawnNode {
         DungeonStructure.moveForward(reservedLoc, dir, roomType.gridSize / 2 + 1);
         dungeon.reserveSpace(reservedLoc, dir.rotate(RelativeDirection.BACKWARD));
         dungeon.linkLocations.add(loc);
-        dungeon.activeNodes.put(roomType, dungeon.activeNodes.getOrDefault(roomType, 0) + 1);
+        changeActiveNodesCount(dungeon, true);
     }
 
     public void spawn(Dungeon dungeon) { // spread er hvor mye dungeonen sprer seg. 2= veien deler seg, 1=veien fortsetter, 0=blindvei
@@ -57,6 +57,8 @@ public class SpawnNode {
         Location locPossibleConnection = location.clone();
         DungeonStructure.moveForward(locPossibleConnection, direction, 1);
         if (dungeon.linkLocations.contains(locPossibleConnection)) {
+            changeActiveNodesCount(dungeon, false);
+            Bukkit.broadcast(Component.text("- Link", NamedTextColor.YELLOW));
             return; // hvis det er en annen spawnnode rett foran, altså at 2 stykker peker inn i hverandre
             // da er de allerede kobla sammen og trengs ikke å generere noe hvis det allerede er et rom der
         }
@@ -97,5 +99,9 @@ public class SpawnNode {
         }
         bannedRooms.add(randomRoom);
         spawn(growRate, dungeon, bannedRooms);
+    }
+
+    private void changeActiveNodesCount(Dungeon dungeon, boolean increase) { // activenodes += eller -= 1
+        dungeon.activeNodes.put(roomType, dungeon.activeNodes.getOrDefault(roomType, 0) + (increase ? 1 : -1));
     }
 }
