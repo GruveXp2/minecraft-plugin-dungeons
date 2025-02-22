@@ -1,9 +1,11 @@
 package gruvexp.dungeons;
 
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
 
 public class StructurePool {
 
@@ -54,7 +56,11 @@ public class StructurePool {
         for (Room bannedRoom : bannedRooms) {
             totalWeight -= structures.get(bannedRoom) * (bannedRoom.growRate == growRate ? 1000 : 1);
         }
-        int roll = new Random().nextInt(totalWeight);
+        if (totalWeight <= 0) {
+            Bukkit.broadcast(Component.text("Error! All rooms are banned, idk what rooms to spawn! Total weight = " + totalWeight));
+            return null;
+        }
+        int roll = DungeonManager.RANDOM.nextInt(totalWeight);
         int currentWeight = 0;
         for (Map.Entry<Room, Integer> entry : structures.entrySet()) {
             Room room = entry.getKey();

@@ -63,6 +63,11 @@ public class SpawnNode {
 
         StructurePool pool = dungeon.structurePools.get(roomType);
         Room randomRoom = pool.getRandomStructure(growRate, bannedRooms);
+        if (randomRoom == null) {
+            changeActiveNodesCount(dungeon, false);
+            DungeonManager.spawnTextMarker(location, ChatColor.DARK_RED + "ALL CANDIDATES BANNED!", "all_banned");
+            return;
+        }
         if (DungeonCommand.forcedRoom != null) {
             randomRoom = DungeonCommand.forcedRoom;
             DungeonCommand.forcedRoom = null;
@@ -78,7 +83,7 @@ public class SpawnNode {
             //Bukkit.broadcast(Component.text("space is available", NamedTextColor.GRAY));
             if (!dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
                 Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), dungeonStructure.name));
-                dungeon.activeNodes.put(roomType, dungeon.activeNodes.getOrDefault(roomType, 0) - 1);
+                changeActiveNodesCount(dungeon, false);
                 dungeon.roomCount  .put(roomType, dungeon.roomCount  .getOrDefault(roomType, 0) + 1);
                 dungeonStructure.place(dungeon, location, direction);
                 return;
