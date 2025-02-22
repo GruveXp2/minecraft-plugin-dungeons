@@ -2,15 +2,15 @@ package gruvexp.dungeons;
 
 public enum Room {
     // dungeon
-    END(new DungeonStructure("dungeon", "end", RoomType.CATACOMB_WALKWAY), GrowRate.END),
-    STRAIGHT(new DungeonStructure("dungeon", "straight", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
-    SKELETON_TRAP(new DungeonStructure("dungeon", "skeleton_trap", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC), // +1x pga må ha en blokk for å henge tripwire hook på
-    ARROW_TRAP(new DungeonStructure("dungeon", "arrow_trap", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
-    TURN_R(new DungeonStructure("dungeon", "turn_r", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
-    TURN_L(new DungeonStructure("dungeon", "turn_l", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
-    T_SPLIT_R(new DungeonStructure("dungeon", "t_split_r", RoomType.CATACOMB_WALKWAY), GrowRate.EXPANDING),
-    T_SPLIT_M(new DungeonStructure("dungeon", "t_split_m", RoomType.CATACOMB_WALKWAY), GrowRate.EXPANDING),
-    T_SPLIT_L(new DungeonStructure("dungeon", "t_split_l", RoomType.CATACOMB_WALKWAY), GrowRate.EXPANDING),
+    DUNGEON_END(new DungeonStructure("dungeon", "end", RoomType.CATACOMB_WALKWAY), GrowRate.END),
+    DUNGEON_STRAIGHT(new DungeonStructure("dungeon", "straight", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
+    DUNGEON_SKELETON_TRAP(new DungeonStructure("dungeon", "skeleton_trap", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC), // +1x pga må ha en blokk for å henge tripwire hook på
+    DUNGEON_ARROW_TRAP(new DungeonStructure("dungeon", "arrow_trap", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
+    DUNGEON_TURN_R(new DungeonStructure("dungeon", "turn_r", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
+    DUNGEON_TURN_L(new DungeonStructure("dungeon", "turn_l", RoomType.CATACOMB_WALKWAY), GrowRate.STATIC),
+    DUNGEON_T_SPLIT_R(new DungeonStructure("dungeon", "t_split_r", RoomType.CATACOMB_WALKWAY), GrowRate.EXPANDING),
+    DUNGEON_T_SPLIT_M(new DungeonStructure("dungeon", "t_split_m", RoomType.CATACOMB_WALKWAY), GrowRate.EXPANDING),
+    DUNGEON_T_SPLIT_L(new DungeonStructure("dungeon", "t_split_l", RoomType.CATACOMB_WALKWAY), GrowRate.EXPANDING),
 
     // fortress
     FORTRESS_LAVAROOM(new DungeonStructure("fortress", "origin/lava_room", RoomType.ORIGIN), GrowRate.EXPANDING),
