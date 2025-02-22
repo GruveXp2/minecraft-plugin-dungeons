@@ -1,5 +1,9 @@
-package gruvexp.dungeons;
+package gruvexp.dungeons.room;
 
+import gruvexp.dungeons.Dungeon;
+import gruvexp.dungeons.DungeonManager;
+import gruvexp.dungeons.GrowRate;
+import gruvexp.dungeons.StructurePool;
 import gruvexp.dungeons.commands.DungeonCommand;
 import gruvexp.dungeons.location.Direction;
 import gruvexp.dungeons.location.RelativeDirection;
@@ -12,7 +16,7 @@ import org.bukkit.entity.TextDisplay;
 
 import java.util.HashSet;
 
-public class SpawnNode {
+public class RoomNode {
     private final Location location;
     private final Direction direction;
     private final RoomType roomType;
@@ -21,7 +25,7 @@ public class SpawnNode {
     private final TextDisplay typeMarker;
     public static boolean forceRoom = false;
 
-    public SpawnNode(Dungeon dungeon, Location loc, Direction dir, RoomType roomType, HashSet<Room> bannedRooms) {
+    public RoomNode(Dungeon dungeon, Location loc, Direction dir, RoomType roomType, HashSet<Room> bannedRooms) {
         this.location = loc;
         this.direction = dir;
         this.roomType = roomType;
@@ -81,15 +85,15 @@ public class SpawnNode {
             Bukkit.broadcastMessage(ChatColor.RED + "Failed to spawn a room here, no space for it");
             return;
         }
-        DungeonStructure dungeonStructure = randomRoom.structure();
+        RoomStructure roomStructure = randomRoom.structure();
         //Bukkit.broadcast(Component.text("Trying room " + dungeonStructure.name, NamedTextColor.GRAY));
-        if (dungeonStructure.availableSpace(dungeon, location, direction)) {
+        if (roomStructure.availableSpace(dungeon, location, direction)) {
             //Bukkit.broadcast(Component.text("space is available", NamedTextColor.GRAY));
-            if (!dungeonStructure.hasConflictingExits(dungeon, location, direction)) {
-                Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), dungeonStructure.name));
+            if (!roomStructure.hasConflictingExits(dungeon, location, direction)) {
+                Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), roomStructure.name));
                 changeActiveNodesCount(dungeon, false);
                 dungeon.roomCount  .put(roomType, dungeon.roomCount  .getOrDefault(roomType, 0) + 1);
-                dungeonStructure.place(dungeon, location, direction);
+                roomStructure.place(dungeon, location, direction);
                 return;
             } else {
                 //Bukkit.broadcastMessage(ChatColor.GRAY + "Room " + dungeonStructure.name + " has conflixting exits, trying different room");

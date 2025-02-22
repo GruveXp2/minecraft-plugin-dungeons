@@ -1,5 +1,6 @@
-package gruvexp.dungeons;
+package gruvexp.dungeons.room;
 
+import gruvexp.dungeons.*;
 import gruvexp.dungeons.commands.DungeonCommand;
 import gruvexp.dungeons.location.Coord;
 import gruvexp.dungeons.location.Direction;
@@ -22,7 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
-public class DungeonStructure {
+public class RoomStructure {
     private final Structure structure;
     private final Structure structureVisualization; //Fun
     private final Coord entry;
@@ -30,7 +31,7 @@ public class DungeonStructure {
     public final RoomType roomType;
     public final String name;
 
-    public DungeonStructure(String structureGroup, String structureName, RoomType roomType) {
+    public RoomStructure(String structureGroup, String structureName, RoomType roomType) {
         this.roomType = roomType;
         this.name = structureName;
         structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, structureName));
@@ -221,7 +222,7 @@ public class DungeonStructure {
                             bannedRooms.add(Room.valueOf(roomType.name() + "_" + room));
                         }
                     }
-                    dungeon.addNode(new SpawnNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1]), bannedRooms));
+                    dungeon.addNode(new RoomNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1]), bannedRooms));
                 }
                 case "Space" -> {
                     Location eLoc = e.getLocation();

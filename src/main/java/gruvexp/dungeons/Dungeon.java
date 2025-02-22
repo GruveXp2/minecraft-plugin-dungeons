@@ -1,6 +1,9 @@
 package gruvexp.dungeons;
 
 import gruvexp.dungeons.location.Direction;
+import gruvexp.dungeons.room.Room;
+import gruvexp.dungeons.room.RoomType;
+import gruvexp.dungeons.room.RoomNode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -12,10 +15,10 @@ import java.util.*;
 import static gruvexp.dungeons.DungeonManager.RANDOM;
 
 public abstract class Dungeon {
-    protected final HashMap<RoomType, StructurePool> structurePools = new HashMap<>();
-    protected final HashMap<RoomType, Integer> roomCount = new HashMap<>();
-    protected final HashMap<RoomType, Integer> activeNodes = new HashMap<>();
-    protected final Queue<SpawnNode> spawnNodeQue = new LinkedList<>(); // liste med SpawnNodes (en spawnnode er en posisjon og retning som det kan spånes et rom fra)
+    public final HashMap<RoomType, StructurePool> structurePools = new HashMap<>();
+    public final HashMap<RoomType, Integer> roomCount = new HashMap<>();
+    public final HashMap<RoomType, Integer> activeNodes = new HashMap<>();
+    protected final Queue<RoomNode> roomNodeQue = new LinkedList<>(); // liste med SpawnNodes (en spawnnode er en posisjon og retning som det kan spånes et rom fra)
     public final HashSet<Location> usedSpaces = new HashSet<>();
     public final HashMap<Location, ReservedSpace> reservedSpaces = new HashMap<>();
     public final HashSet<Location> linkLocations = new HashSet<>();
@@ -45,12 +48,12 @@ public abstract class Dungeon {
     }
 
     private void nextNode() {
-        if (spawnNodeQue.isEmpty()) {
+        if (roomNodeQue.isEmpty()) {
             Bukkit.broadcastMessage(ChatColor.YELLOW + "no more rooms to generate");
             //postGeneration();
             return;
         }
-        spawnNodeQue.poll().spawn(this);
+        roomNodeQue.poll().spawn(this);
         if (RANDOM.nextInt(5) == 0) {
             visualizerPosY++;
         }
@@ -59,7 +62,7 @@ public abstract class Dungeon {
             if (roomTickCount > 0) {nextNode();}
             else {
                 Bukkit.getServer().getScheduler().runTaskLater(Main.getPlugin(), () -> {
-                    roomTickCount = spawnNodeQue.size();
+                    roomTickCount = roomNodeQue.size();
                     Bukkit.broadcast(Component.text("Spawning " + roomTickCount + " rooms..."));
                     Bukkit.broadcast(Component.text("- Bridges: " + roomCount.get(RoomType.FORTRESS_BRIDGE) + "T, " + activeNodes.get(RoomType.FORTRESS_BRIDGE) + "A, "));
                     Bukkit.broadcast(Component.text("- Corridors: " + roomCount.get(RoomType.FORTRESS_CORRIDOR) + "T, " + activeNodes.get(RoomType.FORTRESS_CORRIDOR) + "A, "));
@@ -127,7 +130,7 @@ public abstract class Dungeon {
         }
     }
 
-    public void addNode(SpawnNode spawnNode) {
-        spawnNodeQue.add(spawnNode);
+    public void addNode(RoomNode roomNode) {
+        roomNodeQue.add(roomNode);
     }
 }

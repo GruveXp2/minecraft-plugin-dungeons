@@ -1,6 +1,8 @@
 package gruvexp.dungeons;
 
 import gruvexp.dungeons.location.Direction;
+import gruvexp.dungeons.room.RoomStructure;
+import gruvexp.dungeons.room.Room;
 import org.bukkit.Location;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.structure.StructureManager;
@@ -24,8 +26,8 @@ public final class DungeonManager {
         /*if (room == null) {
             throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + structureName + "\" fins ikke!");
         }*/
-        DungeonStructure dungeonStructure = room.structure();
-        dungeonStructure.place(fortress, location, direction);
+        RoomStructure roomStructure = room.structure();
+        roomStructure.place(fortress, location, direction);
     }
 
     public static TextDisplay spawnTextMarker(Location loc, String name, String tag) {

@@ -1,5 +1,7 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.room.Room;
+import gruvexp.dungeons.room.RoomType;
 import org.bukkit.Location;
 
 import java.util.*;

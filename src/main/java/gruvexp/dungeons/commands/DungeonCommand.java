@@ -2,6 +2,8 @@ package gruvexp.dungeons.commands;
 
 import gruvexp.dungeons.*;
 import gruvexp.dungeons.location.Direction;
+import gruvexp.dungeons.room.Room;
+import gruvexp.dungeons.room.RoomNode;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -89,7 +91,7 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                     if (args.length == 2) {
                         String selectedRoom = args[1];
                         forcedRoom = Room.valueOf(selectedRoom.toUpperCase());
-                        SpawnNode.forceRoom = true;
+                        RoomNode.forceRoom = true;
                     }
                     DungeonManager.fortress.manualNextNode();
                 }

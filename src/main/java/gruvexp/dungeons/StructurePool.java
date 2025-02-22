@@ -1,5 +1,6 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.room.Room;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 
