@@ -8,11 +8,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class DungeonTabCompletor implements TabCompleter {
     @Override
@@ -52,7 +50,9 @@ public class DungeonTabCompletor implements TabCompleter {
                     return List.of("showreserved", "showdircheck", "strucon", "exitnodchk", "usedspace");
                 }
                 case "nextroom" -> {
-                    return Arrays.stream(Room.values()).map(room -> room.name().toLowerCase()).collect(Collectors.toCollection(ArrayList::new));
+                    Set<String> suggestions = getRoomSuggestions(args);
+
+                    return new ArrayList<>(suggestions);
                 }
                 case "printusedspaces" -> {
                     return new ArrayList<>(0);
@@ -62,5 +62,33 @@ public class DungeonTabCompletor implements TabCompleter {
         } catch (IllegalArgumentException e) {
             return List.of(ChatColor.RED + e.getMessage());
         }
+    }
+
+    private static @NotNull Set<String> getRoomSuggestions(String[] args) {
+        String current = args[args.length - 1].toLowerCase();
+
+        Set<String> suggestions = new HashSet<>();
+
+        for (Room room : Room.values()) {
+            String name = room.name().toLowerCase();
+            String[] parts = name.split("_");
+
+            if (parts.length > 1) {
+                String prefix = parts[0];
+
+                if (current.isEmpty() || prefix.startsWith(current)) {
+                    suggestions.add(prefix); // Foreslå bare det første nivået
+                } else if (name.startsWith(current)) {
+                    if (current.contains(parts[1])) {
+                        suggestions.add(name);
+                    } else {
+                        suggestions.add(prefix + "_" + parts[1]); // Foreslå neste nivå
+                    }
+                }
+            } else {
+                suggestions.add(name); // Foreslå de som ikke har "_"
+            }
+        }
+        return suggestions;
     }
 }
