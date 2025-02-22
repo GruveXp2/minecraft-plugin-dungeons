@@ -1,5 +1,7 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.location.Coord;
+import gruvexp.dungeons.location.Direction;
 import org.bukkit.*;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;

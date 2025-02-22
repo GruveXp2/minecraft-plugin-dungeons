@@ -1,5 +1,6 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.location.Direction;
 import org.bukkit.Location;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.structure.StructureManager;

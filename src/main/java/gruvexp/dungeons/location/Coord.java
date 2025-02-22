@@ -1,4 +1,4 @@
-package gruvexp.dungeons;
+package gruvexp.dungeons.location;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

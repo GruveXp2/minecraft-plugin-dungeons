@@ -1,6 +1,9 @@
 package gruvexp.dungeons;
 
 import gruvexp.dungeons.commands.DungeonCommand;
+import gruvexp.dungeons.location.Coord;
+import gruvexp.dungeons.location.Direction;
+import gruvexp.dungeons.location.RelativeDirection;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;

@@ -1,5 +1,7 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.location.Coord;
+
 import java.util.Set;
 
 public enum Feature {

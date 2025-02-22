@@ -1,6 +1,7 @@
 package gruvexp.dungeons;
 
 import gruvexp.dungeons.commands.DungeonCommand;
+import gruvexp.dungeons.location.Direction;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 

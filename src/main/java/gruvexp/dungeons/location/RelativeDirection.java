@@ -1,4 +1,4 @@
-package gruvexp.dungeons;
+package gruvexp.dungeons.location;
 
 public enum RelativeDirection {
 

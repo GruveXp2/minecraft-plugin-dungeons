@@ -1,5 +1,6 @@
 package gruvexp.dungeons;
 
+import gruvexp.dungeons.location.Direction;
 import org.bukkit.Location;
 
 public class SpawnFeature {
