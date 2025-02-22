@@ -15,13 +15,14 @@ public enum Room {
     // fortress
     FORTRESS_LAVAROOM(new DungeonStructure("fortress", "origin/lava_room", RoomType.ORIGIN), GrowRate.EXPANDING),
     FORTRESS_BRIDGE_BOW_F(new DungeonStructure("fortress", "bridge/bow_f", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
-    FORTRESS_BRIDGE_F(new DungeonStructure("fortress", "bridge/f", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
-    FORTRESS_BRIDGE_END(new DungeonStructure("fortress", "bridge/end", RoomType.FORTRESS_BRIDGE), GrowRate.END),
     FORTRESS_BRIDGE_BOW_X(new DungeonStructure("fortress", "bridge/bow_x", RoomType.FORTRESS_BRIDGE), GrowRate.EXPANDING),
-    FORTRESS_BRIDGE_X(new DungeonStructure("fortress", "bridge/x", RoomType.FORTRESS_BRIDGE), GrowRate.EXPANDING),
-    FORTRESS_BRIDGE_BLAZE(new DungeonStructure("fortress", "bridge/blaze", RoomType.FORTRESS_BRIDGE), GrowRate.END),
+    FORTRESS_BRIDGE_PILLAR_F(new DungeonStructure("fortress", "bridge/pillar_f", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
+    FORTRESS_BRIDGE_PILLAR_END(new DungeonStructure("fortress", "bridge/pillar_end", RoomType.FORTRESS_BRIDGE), GrowRate.END),
+    FORTRESS_BRIDGE_F(new DungeonStructure("fortress", "bridge/f", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
     FORTRESS_BRIDGE_L(new DungeonStructure("fortress", "bridge/l", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
     FORTRESS_BRIDGE_R(new DungeonStructure("fortress", "bridge/r", RoomType.FORTRESS_BRIDGE), GrowRate.STATIC),
+    FORTRESS_BRIDGE_X(new DungeonStructure("fortress", "bridge/x", RoomType.FORTRESS_BRIDGE), GrowRate.EXPANDING),
+    FORTRESS_BRIDGE_BLAZE(new DungeonStructure("fortress", "bridge/blaze", RoomType.FORTRESS_BRIDGE), GrowRate.END),
 
     FORTRESS_CORRIDOR_F(new DungeonStructure("fortress", "corridor/f", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),
     FORTRESS_CORRIDOR_R(new DungeonStructure("fortress", "corridor/r", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),

@@ -14,16 +14,17 @@ public class NetherFortress extends Dungeon {
     public NetherFortress() {
         super(Room.FORTRESS_LAVAROOM);
         StructurePool bridges = new StructurePool();
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_F, 16);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_F, 16);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_R, 1);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_L, 1);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_F,    160);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_PILLAR_F, 160);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_R,         10);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_L,         10);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_F,          1);
 
         bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_X, 3);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_X, 1);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_X,     1);
 
-        bridges.addStructure(Room.FORTRESS_BRIDGE_END, 3);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE, 1);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_PILLAR_END, 3);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE,      1);
 
         StructurePool corridors = new StructurePool();
         corridors.addStructure(Room.FORTRESS_CORRIDOR_F, 5);
@@ -35,7 +36,7 @@ public class NetherFortress extends Dungeon {
         corridors.addStructure(Room.FORTRESS_CORRIDOR_T, 1);
 
         corridors.addStructure(Room.FORTRESS_CORRIDOR_END_BROKEN, 10);
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_END_LAVA, 1);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_END_LAVA,    1);
 
 
         structurePools.put(RoomType.FORTRESS_BRIDGE, bridges);
