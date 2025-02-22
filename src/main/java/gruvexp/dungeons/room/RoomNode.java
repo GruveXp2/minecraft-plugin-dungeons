@@ -1,6 +1,6 @@
 package gruvexp.dungeons.room;
 
-import gruvexp.dungeons.Dungeon;
+import gruvexp.dungeons.dungeon.Dungeon;
 import gruvexp.dungeons.DungeonManager;
 import gruvexp.dungeons.GrowRate;
 import gruvexp.dungeons.StructurePool;

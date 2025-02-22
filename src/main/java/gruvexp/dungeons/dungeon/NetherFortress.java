@@ -1,5 +1,8 @@
-package gruvexp.dungeons;
+package gruvexp.dungeons.dungeon;
 
+import gruvexp.dungeons.GrowRate;
+import gruvexp.dungeons.SpawnFeature;
+import gruvexp.dungeons.StructurePool;
 import gruvexp.dungeons.room.Room;
 import gruvexp.dungeons.room.RoomType;
 import org.bukkit.Location;

@@ -2,6 +2,7 @@ package gruvexp.dungeons.room;
 
 import gruvexp.dungeons.*;
 import gruvexp.dungeons.commands.DungeonCommand;
+import gruvexp.dungeons.dungeon.Dungeon;
 import gruvexp.dungeons.location.Coord;
 import gruvexp.dungeons.location.Direction;
 import gruvexp.dungeons.location.RelativeDirection;

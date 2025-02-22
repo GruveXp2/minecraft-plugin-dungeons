@@ -1,5 +1,9 @@
-package gruvexp.dungeons;
+package gruvexp.dungeons.dungeon;
 
+import gruvexp.dungeons.GrowRate;
+import gruvexp.dungeons.Main;
+import gruvexp.dungeons.ReservedSpace;
+import gruvexp.dungeons.StructurePool;
 import gruvexp.dungeons.location.Direction;
 import gruvexp.dungeons.room.Room;
 import gruvexp.dungeons.room.RoomType;

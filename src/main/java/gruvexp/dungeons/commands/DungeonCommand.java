@@ -1,6 +1,7 @@
 package gruvexp.dungeons.commands;
 
 import gruvexp.dungeons.*;
+import gruvexp.dungeons.dungeon.NetherFortress;
 import gruvexp.dungeons.location.Direction;
 import gruvexp.dungeons.room.Room;
 import gruvexp.dungeons.room.RoomNode;
