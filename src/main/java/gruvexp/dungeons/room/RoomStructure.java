@@ -6,6 +6,9 @@ import gruvexp.dungeons.dungeon.Dungeon;
 import gruvexp.dungeons.location.Coord;
 import gruvexp.dungeons.location.Direction;
 import gruvexp.dungeons.location.RelativeDirection;
+import gruvexp.dungeons.support.RoofType;
+import gruvexp.dungeons.support.SupportNode;
+import gruvexp.dungeons.support.SupportType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -24,22 +27,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
-public class RoomStructure {
-    private final Structure structure;
+public class RoomStructure extends gruvexp.dungeons.Structure {
     private final Structure structureVisualization; //Fun
-    private final Coord entry;
     public final HashMap<Location, RelativeDirection> exitLocations = new HashMap<>(); // steder som denne strukturen fører til
     public final RoomType roomType;
-    public final String name;
 
     public RoomStructure(String structureGroup, String structureName, RoomType roomType) {
+        super(structureGroup, structureName);
         this.roomType = roomType;
-        this.name = structureName;
-        structure = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, structureName));
         structureVisualization = DungeonManager.STRUCTURE_MANAGER.loadStructure(new NamespacedKey(structureGroup, "_" + structureName)); //Fun
-        if (structure == null) {
-            throw new IllegalArgumentException(ChatColor.RED + "strukturen \"" + new NamespacedKey(structureGroup, structureName).namespace() + "\" fins ikke!");
-        }
         Coord entry = null;
         for (Entity e : structure.getEntities()) {
             String[] name = ChatColor.stripColor(e.getName()).split(" ");
@@ -62,18 +58,6 @@ public class RoomStructure {
             entry = new Coord(3, 3, 3);
         }
         this.entry = entry;
-    }
-
-    private void moveToOrigin(Location loc, Direction dir) {
-        // lokasjonen må justeres basert på hvor innganga er i neste rom, sånn at det neste rommet spawner på en plass sånn at innganga akkurat passer med utanga til den forrige strukturen
-        // så den flyttes til ett av hjørnene av strukturen som er det hjørnet med lavest xyz verdi i library verdenen
-        switch (dir) {
-            case N -> loc.add( entry.x, -entry.y,  entry.z);
-            case S -> loc.add(-entry.x, -entry.y, -entry.z);
-            case E -> loc.add(-entry.z, -entry.y,  entry.x);
-            case W -> loc.add( entry.z, -entry.y, -entry.x);
-            default -> throw new IllegalArgumentException("Illegal direction: \"" + dir + "\" (DungeonStructure:148)");
-        }
     }
 
     public boolean hasConflictingExits(Dungeon dungeon, Location loc, Direction dir) {
@@ -139,7 +123,7 @@ public class RoomStructure {
 
         moveToOrigin(locOrigin, dir); // origin point for structen i verdenen
         for (Entity e : structure.getEntities()) { // looper gjennom alle space shulkers
-            if (!ChatColor.stripColor(e.getName()).equals("Space")) {continue;}
+            if (!ChatColor.stripColor(e.getName()).startsWith("Space")) {continue;}
             Location locSpace = locOrigin.clone();
             locSpace.add(DungeonManager.rotateLocation(e.getLocation(), dir));
             locSpace.setYaw(0);
@@ -207,6 +191,9 @@ public class RoomStructure {
         for (Entity e : structure.getEntities()) {
             String[] name = ChatColor.stripColor(e.getName()).split(" ");
             String type = name[0];
+            Location eLoc = e.getLocation();
+            DungeonManager.rotateLocation(eLoc, dir);
+            eLoc.add(loc); // relativ -> absolutt lokasjon
             switch (type) {
                 case "Forward", "Right", "Left", "Backward" -> {
                     //spawnTextMarker(eLoc, e.getName());
@@ -222,10 +209,23 @@ public class RoomStructure {
                     }
                     dungeon.addNode(new RoomNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1]), bannedRooms));
                 }
+                case "Support" -> {
+                    //spawnTextMarker(eLoc, e.getName());
+                    RelativeDirection relDir = RelativeDirection.FORWARD;
+                    Direction spawnNodeDir = dir.rotate(relDir);
+                    dungeon.addNode(new SupportNode(dungeon, eLoc, spawnNodeDir, SupportType.valueOf(name[1])));
+                }
                 case "Space" -> {
                     eLoc.setYaw(0);
                     eLoc.setPitch(0);
                     dungeon.usedSpaces.add(eLoc);
+                    if (name.length == 2) {
+                        String[] roofInfo = name[1].split(":");
+                        RoofType roofType = RoofType.valueOf(roomType.name() + "_" + roofInfo[0]);
+                        RelativeDirection roofRelDir = RelativeDirection.fromString(roofInfo[1]);
+                        Direction roofDir = dir.rotate(roofRelDir);
+                        dungeon.roofSpaces.put(eLoc, new RoofSpace(roofType, roofDir));
+                    }
                     //spawnTextMarker(eLoc, e.getName());
                 }
                 case "Skeleton" -> {

@@ -40,6 +40,6 @@ public class Utils {
     }
 
     public static String printLocation(Location loc) {
-        return loc.getX() + " " + loc.getY() + " " + loc.getZ() + " - " + loc.getYaw() + " " + loc.getPitch();
+        return loc.getX() + " " + loc.getY() + " " + loc.getZ(); // + " - " + loc.getYaw() + " " + loc.getPitch();
     }
 }
