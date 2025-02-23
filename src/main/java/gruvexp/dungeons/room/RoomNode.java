@@ -92,7 +92,7 @@ public class RoomNode {
             if (!roomStructure.hasConflictingExits(dungeon, location, direction)) {
                 Bukkit.broadcastMessage(String.format("Spawning room %s:%s", growRate.name(), roomStructure.name));
                 changeActiveNodesCount(dungeon, false);
-                dungeon.roomCount  .put(roomType, dungeon.roomCount  .getOrDefault(roomType, 0) + 1);
+                dungeon.roomCount.put(roomType, dungeon.roomCount.getOrDefault(roomType, 0) + 1);
                 roomStructure.place(dungeon, location, direction);
                 return;
             } else {
