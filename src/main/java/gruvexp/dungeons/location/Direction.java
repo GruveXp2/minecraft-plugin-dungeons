@@ -3,7 +3,7 @@ package gruvexp.dungeons.location;
 import org.bukkit.block.structure.StructureRotation;
 
 public enum Direction {
-    N, S, E, W, NS, EW, NSEW;
+    N, S, E, W, NS, EW, ANY;
 
     public static Direction fromString(String dirStr) {
         for (Direction direction : Direction.values()) {
@@ -17,16 +17,15 @@ public enum Direction {
     public StructureRotation toStructureRotation() {
         return switch (this) {
             case N -> StructureRotation.CLOCKWISE_180;
-            case S -> StructureRotation.NONE;
+            case S, NS, ANY -> StructureRotation.NONE;
             case E -> StructureRotation.COUNTERCLOCKWISE_90;
-            case W -> StructureRotation.CLOCKWISE_90;
-            default -> throw new IllegalArgumentException("Illegal direction: \"" + this + "\" (Direction:24)");
+            case W, EW -> StructureRotation.CLOCKWISE_90;
         };
     }
 
     public Direction rotate(RelativeDirection relDir) {
         return switch (relDir) {
-            case FORWARD -> this;
+            case FORWARD, ANY -> this;
             case BACKWARD -> switch (this) {
                 case N -> S;
                 case S -> N;
@@ -41,7 +40,7 @@ public enum Direction {
                 case W -> N;
                 case NS -> EW;
                 case EW -> NS;
-                case NSEW -> this;
+                case ANY -> this;
             };
             case LEFT -> switch (this) {
                 case N -> W;
@@ -50,7 +49,7 @@ public enum Direction {
                 case W -> S;
                 case NS -> EW;
                 case EW -> NS;
-                case NSEW -> this;
+                case ANY -> this;
             };
             case FB -> switch (this) {
                 case N -> S;

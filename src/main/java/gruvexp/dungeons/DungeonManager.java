@@ -42,7 +42,7 @@ public final class DungeonManager {
 
     public static void moveForward(Location loc, Direction dir, int blocks) {
         switch (dir) {
-            case S, NS -> loc.add(0, 0, blocks);
+            case S, NS, ANY -> loc.add(0, 0, blocks);
             case W -> loc.add(-blocks, 0, 0);
             case N -> loc.add(0, 0, -blocks);
             case E, EW -> loc.add(blocks, 0, 0);
@@ -52,7 +52,7 @@ public final class DungeonManager {
 
     public static Location rotateLocation(Location loc, Direction dir) {
         switch (dir) {
-            case S -> {
+            case S, NS, ANY -> {
                 loc.setX(loc.getBlockX());
                 loc.setZ(loc.getBlockZ());
             }
@@ -60,13 +60,13 @@ public final class DungeonManager {
                 loc.setX(-loc.getBlockX());
                 loc.setZ(-loc.getBlockZ());
             }
-            case E -> {
-                double oldX = loc.getBlockX();
+            case E, EW -> {
+                int oldX = loc.getBlockX();
                 loc.setX(loc.getBlockZ());
                 loc.setZ(-oldX);
             }
             case W -> {
-                double oldX = loc.getBlockX();
+                int oldX = loc.getBlockX();
                 loc.setX(-loc.getBlockZ());
                 loc.setZ(oldX);
             }

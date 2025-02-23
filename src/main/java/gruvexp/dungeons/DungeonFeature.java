@@ -139,7 +139,7 @@ public class DungeonFeature {
             dir = DungeonManager.RANDOM.nextInt(2) == 1 ? Direction.N : Direction.S;
         } else if (dir == Direction.EW) {
             dir = DungeonManager.RANDOM.nextInt(2) == 1 ? Direction.E : Direction.W;
-        } else if (dir == Direction.NSEW) {
+        } else if (dir == Direction.ANY) {
             int randNum = DungeonManager.RANDOM.nextInt(4);
             dir = switch (randNum) {
                 case 0 -> Direction.N;

@@ -2,7 +2,7 @@ package gruvexp.dungeons.location;
 
 public enum RelativeDirection {
 
-    FORWARD, BACKWARD, RIGHT, LEFT, FB, RL;
+    FORWARD, BACKWARD, RIGHT, LEFT, FB, RL, ANY;
 
     public static RelativeDirection fromString(String dirStr) {
         for (RelativeDirection direction : RelativeDirection.values()) {
@@ -10,7 +10,13 @@ public enum RelativeDirection {
                 return direction;
             }
         }
-        throw new IllegalArgumentException("Invalid direction: " + dirStr);
+        return switch (dirStr.toUpperCase()) {
+            case "F" -> FORWARD;
+            case "R" -> RIGHT;
+            case "L" -> LEFT;
+            case "B" -> BACKWARD;
+            default -> throw new IllegalArgumentException("Invalid direction: " + dirStr);
+        };
     }
 
     public Direction toAbsoluteDirection() {
@@ -21,6 +27,7 @@ public enum RelativeDirection {
             case BACKWARD -> Direction.N;
             case FB -> Direction.NS;
             case RL -> Direction.EW;
+            case ANY -> Direction.ANY;
         };
     }
 }
