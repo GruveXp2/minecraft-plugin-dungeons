@@ -209,9 +209,6 @@ public class RoomStructure {
             String type = name[0];
             switch (type) {
                 case "Forward", "Right", "Left", "Backward" -> {
-                    Location eLoc = e.getLocation();
-                    DungeonManager.rotateLocation(eLoc, dir);
-                    eLoc.add(loc); // relativ -> absolutt lokasjon
                     //spawnTextMarker(eLoc, e.getName());
                     RelativeDirection relDir = RelativeDirection.fromString(type);
                     Direction spawnNodeDir = dir.rotate(relDir);
@@ -226,36 +223,12 @@ public class RoomStructure {
                     dungeon.addNode(new RoomNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1]), bannedRooms));
                 }
                 case "Space" -> {
-                    Location eLoc = e.getLocation();
-                    DungeonManager.rotateLocation(eLoc, dir);
-                    eLoc.add(loc);
                     eLoc.setYaw(0);
                     eLoc.setPitch(0);
                     dungeon.usedSpaces.add(eLoc);
                     //spawnTextMarker(eLoc, e.getName());
                 }
-                case "Wall FB", "Wall RL" -> {
-                    String wallDirStr = type.substring(type.length() - 2);
-                    RelativeDirection wallRelDir = RelativeDirection.fromString(wallDirStr);
-                    Direction wallDir = dir.rotate(wallRelDir); // inkluderer absolutt rotasjon
-                    Location eLoc = e.getLocation();
-                    DungeonManager.rotateLocation(eLoc, dir);
-                    eLoc.add(loc);
-                    DungeonManager.walls.put(eLoc, new SpawnFeature(wallDir, eLoc, Feature.WALL));
-                }
-                case "Iron Arch FB", "Iron Arch RL" -> {
-                    String archDirStr = type.substring(type.length() - 2);
-                    RelativeDirection archRelDir = RelativeDirection.fromString(archDirStr);
-                    Direction archDir = dir.rotate(archRelDir);
-                    Location eLoc = e.getLocation();
-                    DungeonManager.rotateLocation(eLoc, dir);
-                    eLoc.add(loc);
-                    DungeonManager.ironArches.add(new SpawnFeature(archDir, eLoc, Feature.IRON_ARCH));
-                }
                 case "Skeleton" -> {
-                    Location eLoc = e.getLocation();
-                    DungeonManager.rotateLocation(eLoc, dir);
-                    eLoc.add(loc);
                     eLoc.add(0.5, 0, 0.5);
                     Skeleton skeleton = (Skeleton) Main.WORLD.spawnEntity(eLoc, EntityType.SKELETON);
                     Objects.requireNonNull(skeleton.getEquipment()).setHelmet(new ItemStack(Material.IRON_HELMET));
@@ -268,9 +241,6 @@ public class RoomStructure {
                 }
                 case "Entry" -> {}
                 default -> {
-                    Location eLoc = e.getLocation();
-                    DungeonManager.rotateLocation(eLoc, dir);
-                    eLoc.add(loc);
                     Bukkit.broadcast(Component.text(type, NamedTextColor.GRAY));
                     DungeonManager.spawnTextMarker(eLoc, ChatColor.RED + e.getName(), "unknown_entity");}
             }
