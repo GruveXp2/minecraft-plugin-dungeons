@@ -19,30 +19,31 @@ public class NetherFortress extends Dungeon {
     public NetherFortress() {
         super(Room.FORTRESS_LAVAROOM);
         StructurePool bridges = new StructurePool();
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_F,    160);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_PILLAR_F, 160);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_R,         10);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_L,         10);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_F,          1);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_F,   160);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_PILLAR_F,160);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_R, 10);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_L, 10);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_F, 1);
 
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_X, 3);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_X,     1);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_X,  3);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_X,1);
 
-        bridges.addStructure(Room.FORTRESS_BRIDGE_PILLAR_END, 3);
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE,      1);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_END,   10);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_PILLAR_END,3);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE,     1);
 
         StructurePool corridors = new StructurePool();
         corridors.addStructure(Room.FORTRESS_CORRIDOR_F, 5);
         corridors.addStructure(Room.FORTRESS_CORRIDOR_R, 1);
         corridors.addStructure(Room.FORTRESS_CORRIDOR_L, 1);
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_STAIRS, 1);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_STAIRS,1);
 
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_X, 3);
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_T, 3);
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_WART, 1);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_X,   3);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_T,   3);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_WART,1);
 
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_END_BROKEN, 10);
-        corridors.addStructure(Room.FORTRESS_CORRIDOR_END_LAVA,    1);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_END_BROKEN,10);
+        corridors.addStructure(Room.FORTRESS_CORRIDOR_END_LAVA,  1);
 
 
         structurePools.put(RoomType.FORTRESS_BRIDGE, bridges);
