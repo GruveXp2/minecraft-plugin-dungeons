@@ -64,4 +64,34 @@ public enum Direction {
             case ANY -> ANY;
         };
     }
+
+    public boolean isCompatible(Direction other) { // strukturen passer, men må kanskje roteres
+        if (other == this || other == ANY) return true;
+        return switch (this) {
+            case N, S -> other == NS;
+            case E, W -> other == EW;
+            case NS -> other ==  N || other == S;
+            case EW -> other ==  E || other == W;
+            case ANY -> true;
+        };
+    }
+
+    public boolean isFullyCompatible(Direction other) { // strukturen passer og trenger ikke å roteres
+        if (other == this || other == ANY) return true;
+        return switch (this) {
+            case N, S -> other == NS;
+            case E, W -> other == EW;
+            case NS -> other ==  N;
+            case EW -> other ==  E;
+            case ANY -> true;
+        };
+    }
+
+    public Direction getSpecifiedDirection(boolean flipped) { // hvis det er riktig struktur men må roteres, finn ut åssen vei
+        return switch (this) {
+            case N, S, E, W, ANY -> this;
+            case NS -> flipped ? S : N;
+            case EW -> flipped ? W : E;
+        };
+    }
 }

@@ -43,14 +43,25 @@ public class SupportNode {
         Location locSpace = location.clone();
         locSpace.subtract(0, 4, 0);
         Support support;
-        Direction roofDirection = Direction.ANY;
+        Direction bottomDirection = Direction.ANY;
+        Direction topDirection = direction;
         if (dungeon.usedSpaces.contains(locSpace)) {
             if (dungeon.roofSpaces.containsKey(locSpace)) {
                 RoofSpace roofSpace = dungeon.roofSpaces.get(locSpace);
                 RoofType roofType = roofSpace.roofType();
-                roofDirection = roofSpace.direction();
+                bottomDirection = roofSpace.direction();
                 support = switch (supportType) {
-                    case BRIDGE_PILLAR -> Support.PLACEHOLDER;
+                    case BRIDGE_PILLAR -> {
+                        boolean isCompatible = topDirection.isCompatible(bottomDirection); // hvis de går samme vei akse (altså at strukturen muligens må roteres)
+                        boolean isFullyCompatible = topDirection.isFullyCompatible(bottomDirection); // hvis de går samme vei uten at strukturen må roteres
+                        topDirection = direction.getSpecifiedDirection(!isFullyCompatible);
+                        yield switch (roofType) {
+                            case FORTRESS_BRIDGE_TOWER_STAIRS -> isCompatible ? Support.PILLAR_TOWER_STAIRS_F : Support.PILLAR_TOWER_STAIRS_R;
+                            case FORTRESS_BRIDGE_TOWER_F -> isCompatible ? Support.PILLAR_TOWER_F_FB : Support.PILLAR_TOWER_F_RL;
+                            case FORTRESS_BRIDGE_BOW_F -> isCompatible ? Support.PILLAR_BOW_F_FB : Support.PILLAR_BOW_F_RL;
+                            case FORTRESS_BRIDGE_BOW_X -> Support.PILLAR_BOW_X;
+                        };
+                    }
                     case BRIDGE_TOWER -> switch (roofType) {
                         case FORTRESS_BRIDGE_TOWER_STAIRS -> Support.BRIDGE_TOWER_STAIRS;
                         case FORTRESS_BRIDGE_TOWER_F -> Support.BRIDGE_TOWER_FILLED;
@@ -63,16 +74,20 @@ public class SupportNode {
         } else { // fortsetter nedover
             if (location.getBlock().getType() != Material.AIR && location.getBlock().getType() != Material.LAVA && location.getBlock().getType() != Material.WATER) return;
             support = switch (supportType) {
-                case BRIDGE_PILLAR -> Support.PLACEHOLDER;
+                case BRIDGE_PILLAR -> Support.PILLAR_FILLED;
                 case BRIDGE_TOWER -> Support.BRIDGE_TOWER_FILLED;
                 case CORRIDOR -> Support.CORRIDOR_FILLED;
             };
         }
         SupportStructure structure = support.structure();
-        if (support != Support.BRIDGE_TOWER_FILLED) {
+        if (support != Support.BRIDGE_TOWER_FILLED && support != Support.CORRIDOR_FILLED && support != Support.PILLAR_FILLED) {
             Bukkit.broadcast(Component.text("Spawning special support: " + support.name() + " (" + Utils.printLocation(location), NamedTextColor.AQUA));
             DungeonManager.spawnedSpecialSupport = true;
         }
-        structure.place(dungeon, location, roofDirection);
+        if (direction == Direction.ANY) {
+            structure.place(dungeon, location, bottomDirection);
+        } else {
+            structure.place(dungeon, location, topDirection);
+        }
     }
 }
