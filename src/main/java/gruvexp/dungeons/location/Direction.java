@@ -25,7 +25,7 @@ public enum Direction {
 
     public Direction rotate(RelativeDirection relDir) {
         return switch (relDir) {
-            case FORWARD, ANY -> this;
+            case FORWARD -> this;
             case BACKWARD -> switch (this) {
                 case N -> S;
                 case S -> N;
@@ -40,7 +40,7 @@ public enum Direction {
                 case W -> N;
                 case NS -> EW;
                 case EW -> NS;
-                case ANY -> this;
+                default -> this;
             };
             case LEFT -> switch (this) {
                 case N -> W;
@@ -49,18 +49,19 @@ public enum Direction {
                 case W -> S;
                 case NS -> EW;
                 case EW -> NS;
-                case ANY -> this;
+                default -> this;
             };
             case FB -> switch (this) {
-                case N -> S;
-                case S -> N;
+                case N, S -> NS;
+                case E, W -> EW;
                 default -> this;
             };
             case RL -> switch (this) {
-                case E -> W;
-                case W -> E;
+                case N, S, NS -> EW;
+                case E, W, EW -> NS;
                 default -> this;
             };
+            case ANY -> ANY;
         };
     }
 }
