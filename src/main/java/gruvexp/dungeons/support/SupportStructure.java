@@ -1,6 +1,5 @@
 package gruvexp.dungeons.support;
 
-import gruvexp.dungeons.Utils;
 import gruvexp.dungeons.dungeon.Dungeon;
 import gruvexp.dungeons.DungeonManager;
 import gruvexp.dungeons.location.Coord;
@@ -52,9 +51,10 @@ public class SupportStructure extends gruvexp.dungeons.Structure {
             switch (type) {
                 case "Support" -> {
                     //spawnTextMarker(eLoc, e.getName());
-                    RelativeDirection relDir = RelativeDirection.FORWARD;
-                    Direction spawnNodeDir = dir.rotate(relDir);
-                    dungeon.addNode(new SupportNode(dungeon, eLoc, spawnNodeDir, SupportType.valueOf(name[1])));
+                    String[] supportPart = name[1].split(":");
+                    RelativeDirection supportRelDir = RelativeDirection.fromString(supportPart[1]);
+                    Direction spawnNodeDir = dir.rotate(supportRelDir);
+                    dungeon.addNode(new SupportNode(dungeon, eLoc, spawnNodeDir, SupportType.valueOf(supportPart[0])));
                 }
                 case "Entry" -> {}
                 default -> {

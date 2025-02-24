@@ -210,10 +210,10 @@ public class RoomStructure extends gruvexp.dungeons.Structure {
                     dungeon.addNode(new RoomNode(dungeon, eLoc, spawnNodeDir, RoomType.valueOf(name[1]), bannedRooms));
                 }
                 case "Support" -> {
-                    //spawnTextMarker(eLoc, e.getName());
-                    RelativeDirection relDir = RelativeDirection.FORWARD;
-                    Direction spawnNodeDir = dir.rotate(relDir);
-                    dungeon.addNode(new SupportNode(dungeon, eLoc, spawnNodeDir, SupportType.valueOf(name[1])));
+                    String[] supportPart = name[1].split(":");
+                    RelativeDirection supportRelDir = RelativeDirection.fromString(supportPart[1]);
+                    Direction spawnNodeDir = dir.rotate(supportRelDir);
+                    dungeon.addNode(new SupportNode(dungeon, eLoc, spawnNodeDir, SupportType.valueOf(supportPart[0])));
                 }
                 case "Space" -> {
                     eLoc.setYaw(0);
