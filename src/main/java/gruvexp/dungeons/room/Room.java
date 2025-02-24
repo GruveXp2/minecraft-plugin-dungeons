@@ -27,6 +27,10 @@ public enum Room {
     FORTRESS_BRIDGE_TOWER_X(new RoomStructure("fortress", "bridge/tower_x", RoomType.FORTRESS_BRIDGE), GrowRate.EXPANDING),
     FORTRESS_BRIDGE_BLAZE(new RoomStructure("fortress", "bridge/blaze", RoomType.FORTRESS_BRIDGE), GrowRate.END),
 
+    TEST_F(new RoomStructure("fortress", "test/support_f", RoomType.FORTRESS_BRIDGE), GrowRate.END),
+    TEST_R(new RoomStructure("fortress", "test/support_r", RoomType.FORTRESS_BRIDGE), GrowRate.END),
+    TEST_A(new RoomStructure("fortress", "test/support_a", RoomType.FORTRESS_BRIDGE), GrowRate.END),
+
     FORTRESS_CORRIDOR_F(new RoomStructure("fortress", "corridor/f", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),
     FORTRESS_CORRIDOR_R(new RoomStructure("fortress", "corridor/r", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),
     FORTRESS_CORRIDOR_L(new RoomStructure("fortress", "corridor/l", RoomType.FORTRESS_CORRIDOR), GrowRate.STATIC),

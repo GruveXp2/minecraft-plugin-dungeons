@@ -22,6 +22,7 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
     public static boolean strucon = false;
     public static boolean extnodchk = false;
     public static boolean usedspace = false;
+    public static boolean quickspawn = false;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) { // /dungeon spawn xyz dir
@@ -56,8 +57,12 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                         throw new IllegalArgumentException("not enough args");
                     }
                     String bool = args[1];
-                    DungeonManager.fortress.manualSpawn = bool.equals("true");
-                    sender.sendMessage("Changed manualspawn to " + DungeonManager.fortress.manualSpawn);
+                    DungeonManager.manualSpawn = bool.equals("true");
+                    sender.sendMessage("Changed manualspawn to " + DungeonManager.manualSpawn);
+                }
+                case "quickspawn" -> {
+                    quickspawn = !quickspawn;
+                    sender.sendMessage("Changed quickspawn to " + quickspawn);
                 }
                 case "info" -> {
                     if (args.length == 1) {

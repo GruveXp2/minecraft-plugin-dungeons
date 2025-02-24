@@ -1,6 +1,7 @@
 package gruvexp.dungeons.dungeon;
 
 import gruvexp.dungeons.*;
+import gruvexp.dungeons.commands.DungeonCommand;
 import gruvexp.dungeons.location.Direction;
 import gruvexp.dungeons.room.Room;
 import gruvexp.dungeons.room.RoomType;
@@ -32,7 +33,6 @@ public abstract class Dungeon {
     protected int supportTickCount = 0;
     protected int maxRooms = 0;
     public int visualizerPosY = 0;
-    public boolean manualSpawn = false;
 
     public Dungeon(Room roomOrigin) {
         this.roomOrigin = roomOrigin;
@@ -55,6 +55,7 @@ public abstract class Dungeon {
     private void nextNode() {
         if (roomNodeQue.isEmpty()) {
             Bukkit.broadcastMessage(ChatColor.YELLOW + "no more rooms to generate");
+            DungeonCommand.quickspawn = false;
             nextSupportNode();
             return;
         }
@@ -62,7 +63,7 @@ public abstract class Dungeon {
         if (RANDOM.nextInt(5) == 0) {
             visualizerPosY++;
         }
-        if (!manualSpawn) {
+        if (!DungeonManager.manualSpawn || DungeonCommand.quickspawn) {
             roomTickCount--;
             if (roomTickCount > 0) {
                 nextNode();
@@ -85,7 +86,7 @@ public abstract class Dungeon {
             return;
         }
         supportNodeQue.poll().spawn(this);
-        if (!manualSpawn) {
+        if (!DungeonManager.manualSpawn) {
             supportTickCount--;
             if (supportTickCount > 0) {
                 nextSupportNode();}
@@ -97,7 +98,10 @@ public abstract class Dungeon {
                 }, 10L);
             }
 
+        } else if (!DungeonManager.spawnedSpecialSupport) {
+            nextSupportNode();
         }
+        DungeonManager.spawnedSpecialSupport = false;
     }
 
     /*private void postGeneration() { // genererer stuff som vegger, jernbuer, hindringer osv
@@ -151,7 +155,7 @@ public abstract class Dungeon {
         //               dette er for å gjøre det lettere å finne dungeonen, ved at man kan finne en lang sidegang som fører inn til midten
 
     public void manualNextNode() {
-        if (manualSpawn) {
+        if (DungeonManager.manualSpawn) {
             Bukkit.broadcast(Component.text("========Next Node========", NamedTextColor.YELLOW));
             nextNode();
         }

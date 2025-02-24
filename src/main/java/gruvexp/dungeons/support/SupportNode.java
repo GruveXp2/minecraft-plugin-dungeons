@@ -6,6 +6,7 @@ import gruvexp.dungeons.Utils;
 import gruvexp.dungeons.dungeon.Dungeon;
 import gruvexp.dungeons.location.Direction;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -68,6 +69,10 @@ public class SupportNode {
             };
         }
         SupportStructure structure = support.structure();
+        if (support != Support.BRIDGE_TOWER_FILLED) {
+            Bukkit.broadcast(Component.text("Spawning special support: " + support.name() + " (" + Utils.printLocation(location), NamedTextColor.AQUA));
+            DungeonManager.spawnedSpecialSupport = true;
+        }
         structure.place(dungeon, location, roofDirection);
     }
 }

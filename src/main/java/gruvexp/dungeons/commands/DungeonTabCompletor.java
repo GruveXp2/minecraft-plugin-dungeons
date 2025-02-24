@@ -19,7 +19,7 @@ public class DungeonTabCompletor implements TabCompleter {
         Player p = (Player) sender;
 
         if (args.length == 1) {
-            return List.of("spawn", "info", "manualspawn", "nextroom", "printusedspaces");
+            return List.of("spawn", "info", "manualspawn", "quickspawn", "nextroom", "printusedspaces");
         }
         String oper = args[0];
         try {
