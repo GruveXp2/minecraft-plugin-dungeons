@@ -9,7 +9,9 @@ public enum Support {
     BRIDGE_TOWER_BOW_F(new SupportStructure("fortress", "support/tower_bow_f", SupportType.BRIDGE_TOWER)),
     BRIDGE_TOWER_BOW_X(new SupportStructure("fortress", "support/tower_bow_x", SupportType.BRIDGE_TOWER)),
     PLACEHOLDER(new SupportStructure("fortress", "support/placeholder", SupportType.BRIDGE_TOWER)),
-    BRIDGE_POLE(new SupportStructure("fortress", "support/pole_f", SupportType.BRIDGE_PILLAR));
+    BRIDGE_POLE(new SupportStructure("fortress", "support/pole_f", SupportType.BRIDGE_PILLAR)),
+
+    CORRIDOR_FILLED(new SupportStructure("fortress", "support/corridor_filled", SupportType.CORRIDOR));
 
     private final SupportStructure structure;
 

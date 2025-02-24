@@ -65,7 +65,7 @@ public class SupportNode {
             support = switch (supportType) {
                 case BRIDGE_PILLAR -> Support.PLACEHOLDER;
                 case BRIDGE_TOWER -> Support.BRIDGE_TOWER_FILLED;
-                case CORRIDOR -> Support.PLACEHOLDER;
+                case CORRIDOR -> Support.CORRIDOR_FILLED;
             };
         }
         SupportStructure structure = support.structure();
