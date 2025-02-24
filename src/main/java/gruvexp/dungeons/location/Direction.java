@@ -18,8 +18,8 @@ public enum Direction {
         return switch (this) {
             case N -> StructureRotation.CLOCKWISE_180;
             case S, NS, ANY -> StructureRotation.NONE;
-            case E -> StructureRotation.COUNTERCLOCKWISE_90;
-            case W, EW -> StructureRotation.CLOCKWISE_90;
+            case E, EW -> StructureRotation.COUNTERCLOCKWISE_90;
+            case W -> StructureRotation.CLOCKWISE_90;
         };
     }
 

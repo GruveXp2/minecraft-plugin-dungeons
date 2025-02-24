@@ -25,8 +25,8 @@ public class Structure {
         switch (dir) {
             case N -> loc.add( entry.x, -entry.y,  entry.z);
             case S, NS, ANY -> loc.add(-entry.x, -entry.y, -entry.z);
-            case E -> loc.add(-entry.z, -entry.y,  entry.x);
-            case W, EW -> loc.add( entry.z, -entry.y, -entry.x);
+            case E, EW -> loc.add(-entry.z, -entry.y,  entry.x);
+            case W -> loc.add( entry.z, -entry.y, -entry.x);
         }
     }
 }
