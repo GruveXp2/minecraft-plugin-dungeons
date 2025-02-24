@@ -35,7 +35,7 @@ public final class DungeonManager {
 
     public static TextDisplay spawnTextMarker(Location loc, String name, String tag) {
         Location spawnLoc = new Location(loc.getWorld(), loc.getX() + 0.5, loc.getY(), loc.getZ() + 0.5);
-        TextDisplay textDisplay = Main.WORLD.spawn(spawnLoc, TextDisplay.class);
+        TextDisplay textDisplay = loc.getWorld().spawn(spawnLoc, TextDisplay.class);
         textDisplay.setText(name);
         textDisplay.setBillboard(TextDisplay.Billboard.VERTICAL);
         textDisplay.addScoreboardTag(tag);

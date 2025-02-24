@@ -7,12 +7,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.World;
 
 public class Utils {
 
-    public static Location toLocation(String x, String y, String z) {
+    public static Location toLocation(World world, String x, String y, String z) {
         try {
-            return new Location(Main.WORLD, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z));
+            return new Location(world, Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(ChatColor.RED + "" + x + " " + y + " " + z + " is not a valid position!");
         }

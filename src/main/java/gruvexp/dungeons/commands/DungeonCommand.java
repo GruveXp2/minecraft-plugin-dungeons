@@ -7,9 +7,11 @@ import gruvexp.dungeons.room.Room;
 import gruvexp.dungeons.room.RoomNode;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Collectors;
@@ -38,7 +40,8 @@ public class DungeonCommand implements CommandExecutor { // /dungeon spawn 7945 
                         throw new IllegalArgumentException("not enough args");
                     }
                     String dungeonType = args[1];
-                    Location location = Utils.toLocation(args[2], args[3], args[4]);
+                    World world = sender instanceof Player ? ((Player) sender).getLocation().getWorld() : Main.WORLD;
+                    Location location = Utils.toLocation(world, args[2], args[3], args[4]);
                     String dir = args[5]; // retning
                     int size = 500; // default maks 500 romm
                     if (args.length == 7) {
