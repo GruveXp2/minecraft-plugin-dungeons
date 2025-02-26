@@ -28,7 +28,8 @@ public class NetherFortress extends Dungeon {
         bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_X,  3);
         bridges.addStructure(Room.FORTRESS_BRIDGE_TOWER_X,1);
 
-        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_END,   10);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_END_1,   5);
+        bridges.addStructure(Room.FORTRESS_BRIDGE_BOW_END_2,   5);
         bridges.addStructure(Room.FORTRESS_BRIDGE_PILLAR_END,3);
         bridges.addStructure(Room.FORTRESS_BRIDGE_BLAZE,     1);
 
