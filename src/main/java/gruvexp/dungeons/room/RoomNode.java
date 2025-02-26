@@ -81,10 +81,6 @@ public class RoomNode {
             DungeonCommand.forcedRoom = null;
             Bukkit.broadcast(Component.text("overriding room to " + randomRoom.name(), NamedTextColor.LIGHT_PURPLE));
         }
-        if (randomRoom == null) {
-            Bukkit.broadcastMessage(ChatColor.RED + "Failed to spawn a room here, no space for it");
-            return;
-        }
         RoomStructure roomStructure = randomRoom.structure();
         //Bukkit.broadcast(Component.text("Trying room " + dungeonStructure.name, NamedTextColor.GRAY));
         if (roomStructure.availableSpace(dungeon, location, direction)) {
