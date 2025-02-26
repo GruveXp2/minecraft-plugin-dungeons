@@ -47,6 +47,7 @@ public class SupportStructure extends gruvexp.dungeons.Structure {
             String type = name[0];
             Location eLoc = e.getLocation();
             DungeonManager.rotateLocation(eLoc, dir);
+            eLoc.setWorld(loc.getWorld());
             eLoc.add(loc); // relativ -> absolutt lokasjon
             switch (type) {
                 case "Support" -> {

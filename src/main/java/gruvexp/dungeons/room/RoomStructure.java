@@ -72,6 +72,7 @@ public class RoomStructure extends gruvexp.dungeons.Structure {
         for (Map.Entry<Location, RelativeDirection> entry : exitLocations.entrySet()) {
             // i framtida add sånn at det fins unntak, feks i t kryss så kan den ene veggen bli sett på som inngang, sånn at et rom kan spawne der uten problemer, men blir en vegg hvis ingen rom spawner.
             Location rotatedExitSpace = DungeonManager.rotateLocation(entry.getKey().clone(), dir);
+            rotatedExitSpace.setWorld(locOrigin.getWorld());
             rotatedExitSpace.add(locOrigin); // gjør om til absolutt lokasjon
             rotatedExitSpace.setX(rotatedExitSpace.getBlockX());
             rotatedExitSpace.setZ(rotatedExitSpace.getBlockZ());
@@ -125,7 +126,9 @@ public class RoomStructure extends gruvexp.dungeons.Structure {
         for (Entity e : structure.getEntities()) { // looper gjennom alle space shulkers
             if (!ChatColor.stripColor(e.getName()).startsWith("Space")) {continue;}
             Location locSpace = locOrigin.clone();
-            locSpace.add(DungeonManager.rotateLocation(e.getLocation(), dir));
+            Location eLoc = e.getLocation();
+            eLoc.setWorld(loc.getWorld());
+            locSpace.add(DungeonManager.rotateLocation(eLoc, dir));
             locSpace.setYaw(0);
             locSpace.setPitch(0); // abs pos til shulkerboxen
 
@@ -152,6 +155,7 @@ public class RoomStructure extends gruvexp.dungeons.Structure {
                     boolean hasConnection = false; // hvis det er en reservert plass, så forteller denne om det går ut en vei som connecter med den som reserverte
                     for (Location exitVec : exitLocations.keySet()) {
                         Location exitLoc = DungeonManager.rotateLocation(exitVec.clone(), dir);
+                        exitLoc.setWorld(locOrigin.getWorld());
                         exitLoc.add(locOrigin);
                         //Bukkit.broadcast(Component.text(" - - Struc connection: " + Utils.printLocation(exitLoc), NamedTextColor.GRAY));
                         if (exitLoc.equals(connectionLoc)) {
@@ -192,6 +196,7 @@ public class RoomStructure extends gruvexp.dungeons.Structure {
             String[] name = ChatColor.stripColor(e.getName()).split(" ");
             String type = name[0];
             Location eLoc = e.getLocation();
+            eLoc.setWorld(loc.getWorld());
             DungeonManager.rotateLocation(eLoc, dir);
             eLoc.add(loc); // relativ -> absolutt lokasjon
             switch (type) {
