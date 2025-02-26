@@ -35,6 +35,8 @@ public class SupportStructure extends gruvexp.dungeons.Structure {
     }
 
     public void place(Dungeon dungeon, Location loc, Direction dir) {
+        dungeon.increaseStructureCount(this);
+        //Bukkit.broadcast(Component.text("Placing support structure " + supportType + ": " + dir.name(), NamedTextColor.YELLOW));
         //Bukkit.broadcastMessage(String.format("Initial origin: %s, %s, %s", location.getX(), location.getY(), location.getZ()));
         //DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "start", "conflict");
         moveToOrigin(loc, dir);

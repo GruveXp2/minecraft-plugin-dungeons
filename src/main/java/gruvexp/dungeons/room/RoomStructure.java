@@ -179,6 +179,7 @@ public class RoomStructure extends gruvexp.dungeons.Structure {
     }
 
     public void place(Dungeon dungeon, Location loc, Direction dir) {
+        dungeon.increaseStructureCount(this);
         //Bukkit.broadcastMessage(String.format("Initial origin: %s, %s, %s", location.getX(), location.getY(), location.getZ()));
         //DungeonManager.spawnTextMarker(loc, ChatColor.AQUA + "start", "conflict");
         DungeonManager.moveForward(loc, dir, 1);

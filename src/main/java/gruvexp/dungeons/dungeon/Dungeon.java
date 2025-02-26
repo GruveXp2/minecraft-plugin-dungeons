@@ -29,6 +29,8 @@ public abstract class Dungeon {
     public final HashSet<Location> linkLocations = new HashSet<>();
     public final Room roomOrigin;
 
+    public final HashMap<Structure, Integer> structureCount = new HashMap<>();
+
     protected int roomTickCount = 0;
     protected int supportTickCount = 0;
     protected int maxRooms = 0;
@@ -45,6 +47,15 @@ public abstract class Dungeon {
         visualizerPosY = location.getBlockY() + 4;
         roomOrigin.structure().place(this, location, direction);
         nextNode();
+
+    }
+
+    public void increaseStructureCount(Structure structure) {
+        if (!structureCount.containsKey(structure)) {
+            structureCount.put(structure, 1);
+            return;
+        }
+        structureCount.put(structure, structureCount.get(structure) + 1);
     }
 
     public void reserveSpace(Location loc, Direction dir) {
@@ -82,7 +93,9 @@ public abstract class Dungeon {
 
     private void nextSupportNode() {
         if (supportNodeQue.isEmpty()) {
-            Bukkit.broadcastMessage(ChatColor.YELLOW + "no more support structs to generate");
+            Bukkit.broadcast(Component.text("no more support structs to generate", NamedTextColor.YELLOW));
+            structureCount.keySet().stream().sorted(Comparator.comparing(s -> s.name))
+                    .forEach(s -> Bukkit.broadcast(Component.text(s.name + ": " + structureCount.get(s))));
             return;
         }
         supportNodeQue.poll().spawn(this);
