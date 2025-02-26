@@ -108,7 +108,7 @@ public abstract class Dungeon {
                     supportTickCount = supportNodeQue.size();
                     Bukkit.broadcast(Component.text("Spawning " + supportTickCount + " support structures..."));
                     nextSupportNode();
-                }, 10L);
+                }, 7L);
             }
 
         } else if (!DungeonManager.spawnedSpecialSupport) {
