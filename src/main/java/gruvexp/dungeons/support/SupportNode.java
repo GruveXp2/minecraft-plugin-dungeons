@@ -13,7 +13,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.TextDisplay;
 
+import java.util.Set;
+
 public class SupportNode {
+    private static Set<Material> allowedSupportBlocks = Set.of(Material.AIR, Material.WATER, Material.LAVA);
+
     private final Location location;
     private final Direction direction;
     private final SupportType supportType;
@@ -72,7 +76,16 @@ public class SupportNode {
                 };
             } else return;
         } else { // fortsetter nedover
-            if (location.getBlock().getType() != Material.AIR && location.getBlock().getType() != Material.LAVA && location.getBlock().getType() != Material.WATER) return;
+            if (!allowedSupportBlocks.contains(location.getBlock().getType())) {
+                Location temp = location.clone();
+                boolean continueSupport =
+                        allowedSupportBlocks.contains(temp.add(3, 0, 3).getBlock().getType()) ||
+                        allowedSupportBlocks.contains(temp.add(-6, 0, -6).getBlock().getType()) ||
+                        allowedSupportBlocks.contains(temp.add( 0, 0,  6).getBlock().getType()) ||
+                        allowedSupportBlocks.contains(temp.add( 6, 0, -6).getBlock().getType());
+
+                if (!continueSupport) return;
+            }
             support = switch (supportType) {
                 case BRIDGE_PILLAR -> Support.PILLAR_FILLED;
                 case BRIDGE_TOWER -> Support.BRIDGE_TOWER_FILLED;
